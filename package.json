@@ -1,11 +1,29 @@
 {
   "name": "consequences",
-  "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "author": "Joseph Duffy",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "gulp build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Joseph Duffy",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": "git+https://github.com/JosephDuffy/consequences",
+  "dependencies": {
+    "mz": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/core-js": "^0.9.41",
+    "@types/mz": "^0.0.31",
+    "@types/node": "^7.0.22",
+    "dts-generator": "^2.1.0",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.1.7",
+    "gulp-watch": "^4.3.11",
+    "merge2": "^1.0.3",
+    "tslint": "^5.2.0",
+    "typescript": "^2.3.2"
+  }
 }
