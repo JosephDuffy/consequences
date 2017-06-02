@@ -1,8 +1,8 @@
 import exec from "../helpers/exec";
 import * as fs from "mz/fs";
 import * as path from "path";
-import Addon from "./Addon";
-import { Package, validatePackage } from "./Package";
+import Addon from "../../shared/models/Addon";
+import { Package, validatePackage } from "../../shared/models/Package";
 import { AddonInitialiser, validateAddonInitialiser } from "./AddonInitialiser";
 
 export default class AddonsLoader {

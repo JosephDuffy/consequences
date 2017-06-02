@@ -1,10 +1,13 @@
 import Variable from "../../shared/models/Variable";
+import Conditional from "../../shared/models/Conditional";
 
 export interface Addon {
 
     metadata: Metadata;
 
     variables?: Variable[];
+
+    conditionals?: Conditional[];
 
 }
 

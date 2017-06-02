@@ -1,6 +1,7 @@
 import * as fs from "mz/fs";
 import * as path from "path";
-import { Addon, Metadata } from "./Addon";
+import { Addon, Metadata } from "../../shared/models/Addon";
+import UserInputType from "../../shared/models/UserInputType";
 
 export interface AddonInitialiser {
 
@@ -16,12 +17,10 @@ export interface AddonInitialiser {
 
 export interface ConfigOption {
     name: string;
-    type: ConfigOptionType;
+    type: UserInputType;
     hint?: string;
     defaultValue?: any;
 }
-
-export type ConfigOptionType = "bool" | "string" | "url" | "number";
 
 export function validateAddonInitialiser(arg: any): arg is AddonInitialiser {
     return typeof arg.name === "string" &&
