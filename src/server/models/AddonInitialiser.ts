@@ -1,6 +1,6 @@
 import * as fs from "mz/fs";
 import * as path from "path";
-import { Addon, Metadata } from "../../shared/models/Addon";
+import Addon from "../../shared/models/Addon";
 import UserInputType from "../../shared/models/UserInputType";
 
 export interface AddonInitialiser {
@@ -9,17 +9,18 @@ export interface AddonInitialiser {
 
     description: string;
 
-    config?: ConfigOption[];
+    configOptions?: Addon.ConfigOption[];
 
-    createInstance(metadata: Metadata, config?: any): Promise<Addon>
+    /**
+     * Create and return a new `Addon` instance.
+     *
+     * @param {Addon.Metadata} metadata
+     * @param {{ [id: string]: any; }} [configOptions]
+     * @returns {Promise<Addon>}
+     * @memberof AddonInitialiser
+     */
+    createInstance(metadata: Addon.Metadata, configOptions?: { [id: string]: any; }): Promise<Addon>
 
-}
-
-export interface ConfigOption {
-    name: string;
-    type: UserInputType;
-    hint?: string;
-    defaultValue?: any;
 }
 
 export function validateAddonInitialiser(arg: any): arg is AddonInitialiser {

@@ -1,6 +1,6 @@
-import Conditional from "../models/Conditional";
+import Condition from "../models/Conditional";
 
-export class BooleanTrueConditional implements Conditional {
+export class BooleanTrueConditional implements Condition {
 
     get uniqueId() {
         return "boolean_true";
@@ -20,7 +20,7 @@ export class BooleanTrueConditional implements Conditional {
 
 }
 
-export class BooleanFalseConditional implements Conditional {
+export class BooleanFalseConditional implements Condition {
 
     get uniqueId() {
         return "boolean_false";

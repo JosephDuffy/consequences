@@ -4,6 +4,9 @@
  */
 interface Variable {
 
+    /** A unique (to the addon) identifier. This value MUST be consistent across requests and system restarts */
+    readonly uniqueId: string
+
     /** The name of the variable */
     readonly name: string;
 

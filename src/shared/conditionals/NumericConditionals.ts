@@ -1,7 +1,7 @@
-import { Conditional, ConditionalInput, UserInput } from "../models/Conditional";
+import { Condition, ConditionInput, UserInput } from "../models/Conditional";
 import UserInputType from "../models/UserInputType";
 
-export class NumericInput implements ConditionalInput {
+export class NumericInput implements ConditionInput {
 
     get uniqueId() {
         return "rhs_input";
@@ -17,7 +17,7 @@ export class NumericInput implements ConditionalInput {
 
 }
 
-class NumericConditional {
+export class NumericConditional {
 
     get userInputs() {
         return [
@@ -31,7 +31,7 @@ class NumericConditional {
 
 }
 
-export class NumericEqualConditional extends NumericConditional implements Conditional {
+export class NumericEqualConditional extends NumericConditional implements Condition {
 
     get uniqueId() {
         return "numeric_eq";
@@ -49,7 +49,7 @@ export class NumericEqualConditional extends NumericConditional implements Condi
 
 }
 
-export class NumericLessThanConditional extends NumericConditional implements Conditional {
+export class NumericLessThanConditional extends NumericConditional implements Condition {
 
     get uniqueId() {
         return "numeric_lt";
@@ -67,7 +67,7 @@ export class NumericLessThanConditional extends NumericConditional implements Co
 
 }
 
-export class NumericGreaterThanConditional extends NumericConditional implements Conditional {
+export class NumericGreaterThanConditional extends NumericConditional implements Condition {
 
     get uniqueId() {
         return "numeric_gt";
@@ -85,7 +85,7 @@ export class NumericGreaterThanConditional extends NumericConditional implements
 
 }
 
-export class NumericLessThanOrEqualToConditional extends NumericConditional implements Conditional {
+export class NumericLessThanOrEqualToConditional extends NumericConditional implements Condition {
 
     get uniqueId() {
         return "numeric_lte";
@@ -103,7 +103,7 @@ export class NumericLessThanOrEqualToConditional extends NumericConditional impl
 
 }
 
-export class NumericGreaterOrEqualToThanConditional extends NumericConditional implements Conditional {
+export class NumericGreaterOrEqualToThanConditional extends NumericConditional implements Condition {
 
     get uniqueId() {
         return "numeric_gte";

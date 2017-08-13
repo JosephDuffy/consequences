@@ -4,24 +4,24 @@ import UserInputType from "./UserInputType";
 /**
  * An object that evaluates a given input to determine if the processing of an event should continue
  */
-export interface Conditional {
+export interface Condition {
 
     /** A unique (to the addon) identifier. This value MUST be consistent across requests and system restarts */
     readonly uniqueId: string
 
     /**
-     * A user-facing string. Will be used in the format `${inputName} ${conditionalName}`
+     * A user-facing string. Will be used in the format `${inputName} ${conditionName}`
      *
-     * e.g. With an input named "On" and a conditional named "is true" the result would be "On is true"
+     * e.g. With an input named "On" and a condition named "is true" the result would be "On is true"
      */
     readonly name: string;
 
     /** An optional array of extra inputs that the user may provide */
-    readonly extraInputs?: ConditionalInput[];
+    readonly extraInputs?: ConditionInput[];
 
     /**
-     * Checks if the provided input it supported by this conditional. If this method
-     * indicates that this conditional supports the provided input it will be shown to the
+     * Checks if the provided input it supported by this condition. If this method
+     * indicates that this condition supports the provided input it will be shown to the
      * user
      *
      * @param input The value to check support for
@@ -34,18 +34,18 @@ export interface Conditional {
      *
      * @param input The value to be evaluated
      * @param userInputs An array of extra values input by the user
-     * @returns `true` if the conditional check passes, otherwise `false`
+     * @returns `true` if the condition check passes, otherwise `false`
      */
     evaluate(input: any, userInputs?: UserInput[]): boolean;
 
 }
 
 /**
- * An input to present to the user when creating the conditional
+ * An input to present to the user when creating the condition
  */
-export interface ConditionalInput {
+export interface ConditionInput {
 
-    /** A unique (to the the conditional) identifier. This value MUST be consistent across requests and system restarts */
+    /** A unique (to the the condition) identifier. This value MUST be consistent across requests and system restarts */
     readonly uniqueId: string;
 
     /** The default value to pre-populate the input field with */
@@ -57,7 +57,7 @@ export interface ConditionalInput {
     /** A user-facing string to provide an extra hint to the user */
     readonly hint?: string;
 
-    /** A flag denoting whether the input requires a value for the conditional to evaluated */
+    /** A flag denoting whether the input requires a value for the condition to evaluated */
     readonly optional: boolean;
 
     /** The data type to ask the user to input */
@@ -84,4 +84,4 @@ export interface UserInput {
 
 }
 
-export default Conditional;
+export default Condition;

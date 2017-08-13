@@ -6,7 +6,7 @@ export interface Package {
     version: string;
     main: string;
     keywords: string[];
-    engines: string[];
+    peerDependencies: string[];
 }
 
 export function validatePackage(arg: any): arg is Package {
@@ -14,7 +14,7 @@ export function validatePackage(arg: any): arg is Package {
            typeof arg.version === "string" &&
            typeof arg.main === "string" &&
            arg.keywords !== undefined &&
-           arg.engines !== undefined;
+           arg.peerDependencies !== undefined;
 }
 
 export default Package;

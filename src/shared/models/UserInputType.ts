@@ -3,7 +3,7 @@ enum UserInputType {
     boolean,
     string,
     url,
-    number
+    number,
 }
 
 export default UserInputType;
