@@ -1,10 +1,10 @@
-import { UserInput } from './Conditional';
+import { UserInput } from './Condition';
 
 interface Action {
 
-    readonly uniqueId: string;
+  readonly uniqueId: string;
 
-    perform(userInputs: UserInput[]): void;
+  perform(userInputs: UserInput[]): void;
 
 }
 

@@ -1,16 +1,14 @@
 import { Server as HapiServer, ServerConnectionOptions } from 'hapi';
 import winston = require('winston');
+import Good = require('good');
+import GoodWinston = require('good-winston');
 
 import createRoutes from '../routes';
 
-import AddonsLoader from './AddonsLoader';
-import AddonInitialiser from './AddonInitialiser';
 import Addon from '../../shared/models/Addon';
+import AddonInitialiser from './AddonInitialiser';
+import AddonsLoader from './AddonsLoader';
 import Database from './Database';
-
-// tslint:disable-next-line:no-var-requires
-const Good = require('good');
-const GoodWinston = require('good-winston');
 
 class Server {
 
@@ -30,9 +28,9 @@ class Server {
 
   constructor() {
     this.httpServer = new HapiServer({
-        debug: {
-            request: ['error']
-        }
+      debug: {
+        request: ['error'],
+      },
     });
 
     this.database = new Database();
