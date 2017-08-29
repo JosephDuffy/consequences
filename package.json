@@ -10,7 +10,10 @@
     "build": "tsc",
     "lint": "tslint 'src/**/*.ts' --exclude 'src/**/*.d.ts'",
     "lint:fix": "npm run lint -- --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate-types": "npm run generate-types:addons; npm run generate-types:api",
+    "generate-types:addons": "dts-bundle-generator ./types/addons/index.ts -o ./types/addons.d.ts",
+    "generate-types:api": "dts-bundle-generator ./types/api/index.ts -o ./types/api.d.ts"
   },
   "license": "MIT",
   "repository": "git+https://github.com/JosephDuffy/consequences",
@@ -29,6 +32,7 @@
     "@types/mz": "^0.0.31",
     "@types/node": "^7.0.22",
     "@types/winston": "^2.3.4",
+    "dts-bundle-generator": "^0.2.0",
     "nodemon": "^1.11.0",
     "ts-node": "^3.3.0",
     "tslint": "^5.2.0",

@@ -1,6 +1,6 @@
-import Condition from '../../shared/models/Condition';
-import UserInputType from '../../shared/models/UserInputType';
-import Variable from '../../shared/models/Variable';
+import Condition from './Condition';
+import UserInputType from './UserInputType';
+import Variable from './Variable';
 
 interface Addon {
 

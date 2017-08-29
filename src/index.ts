@@ -1,4 +1,4 @@
-import Server from './server/models/Server';
+import Server from './models/Server';
 
 (async () => {
   const server = new Server();

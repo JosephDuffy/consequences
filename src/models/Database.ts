@@ -1,6 +1,6 @@
 import Loki = require('lokijs');
 
-import EventListener from '../../shared/models/EventListener';
+import EventListener from './EventListener';
 
 class Database {
 

@@ -1,7 +1,7 @@
 import * as fs from 'mz/fs';
 import * as path from 'path';
-import Addon from '../../shared/models/Addon';
-import { Package, validatePackage } from '../../shared/models/Package';
+import Addon from './Addon';
+import { Package, validatePackage } from './Package';
 import exec from '../helpers/exec';
 import { AddonInitialiser, validateAddonInitialiser } from './AddonInitialiser';
 

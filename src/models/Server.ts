@@ -5,7 +5,7 @@ import GoodWinston = require('good-winston');
 
 import createRoutes from '../routes';
 
-import Addon from '../../shared/models/Addon';
+import Addon from './Addon';
 import AddonInitialiser from './AddonInitialiser';
 import AddonsLoader from './AddonsLoader';
 import Database from './Database';

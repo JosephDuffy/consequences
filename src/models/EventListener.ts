@@ -1,6 +1,6 @@
 import { UserInput } from './Condition';
 
-interface EventListener {
+export interface EventListener {
 
   /**
    * The unique identifier of the module to load the variable from

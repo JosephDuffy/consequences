@@ -1,7 +1,7 @@
 import * as fs from 'mz/fs';
 import * as path from 'path';
-import Addon from '../../shared/models/Addon';
-import UserInputType from '../../shared/models/UserInputType';
+import Addon from './Addon';
+import UserInputType from './UserInputType';
 
 export interface AddonInitialiser {
 

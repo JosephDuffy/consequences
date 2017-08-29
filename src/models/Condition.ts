@@ -1,4 +1,4 @@
-import Variable from '../../shared/models/Variable';
+import Variable from './Variable';
 import UserInputType from './UserInputType';
 
 /**
