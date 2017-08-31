@@ -1,4 +1,3 @@
-
 import AddonInitialiser from '../models/AddonInitialiser';
 import Core from '../models/Core';
 

@@ -2,7 +2,7 @@ import * as fs from 'mz/fs';
 import * as path from 'path';
 import exec from '../helpers/exec';
 
-import AddonInitialiser, { validateAddonInitialiser } from './AddonInitialiser';
+import AddonInitialiser from './AddonInitialiser';
 import { validatePackage } from './Package';
 
 export type AddonModule = {
@@ -64,12 +64,12 @@ export default class AddonsLoader {
       }
 
       // tslint:disable-next-line:variable-name
-      const AddonInitialiser = require(mainScriptPath).default;
+      const AddonConstructor = require(mainScriptPath).default;
 
-      if (typeof AddonInitialiser === 'function') {
-        const initialiser = new AddonInitialiser();
+      if (typeof AddonConstructor === 'function') {
+        const initialiser = new AddonConstructor();
 
-        if (validateAddonInitialiser(initialiser)) {
+        if (AddonInitialiser.validate(initialiser)) {
           return {
             name,
             initialiser,
