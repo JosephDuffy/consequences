@@ -28,8 +28,6 @@ Motion Sensor (variable)
         └── The has not set (condition)
             ├── Set the lounge light bulb's temperature to soft (action)
             └── Turn light bulb up to 30% (action)
-
-
 ```
 ## Status
 
