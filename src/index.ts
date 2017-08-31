@@ -1,6 +1,11 @@
-import Server from './models/Server';
+import 'reflect-metadata';
+import { useContainer } from 'routing-controllers';
+import { Container } from 'typedi';
+import Core from './models/Core';
+
+useContainer(Container);
 
 (async () => {
-  const server = new Server();
-  await server.start();
+  const core = Container.get(Core);
+  await core.start();
 })();

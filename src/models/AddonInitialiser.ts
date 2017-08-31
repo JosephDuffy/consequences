@@ -1,15 +1,8 @@
-import * as fs from 'mz/fs';
-import * as path from 'path';
 import Addon from './Addon';
-import UserInputType from './UserInputType';
 
-export interface AddonInitialiser {
+interface AddonInitialiser {
 
-  name: string;
-
-  description: string;
-
-  configOptions?: Addon.ConfigOption[];
+  readonly metadata: AddonInitialiser.Metadata;
 
   /**
    * Create and return a new `Addon` instance.
@@ -23,10 +16,26 @@ export interface AddonInitialiser {
 
 }
 
-export function validateAddonInitialiser(arg: any): arg is AddonInitialiser {
-  return typeof arg.name === 'string' &&
-         typeof arg.description === 'string' &&
-         typeof arg.createInstance === 'function';
+namespace AddonInitialiser {
+  export interface Metadata {
+    readonly name: string;
+
+    readonly description: string;
+
+    readonly configOptions?: Addon.ConfigOption[];
+  }
+
+  export function validate(arg: any): arg is AddonInitialiser {
+    return typeof arg.metadata === 'object' &&
+          validateMetadata(arg.metadata) &&
+          typeof arg.createInstance === 'function';
+  }
+
+  export function validateMetadata(arg: any): arg is AddonInitialiser.Metadata {
+    return typeof arg.name === 'string' &&
+          typeof arg.description === 'string';
+  }
+
 }
 
 export default AddonInitialiser;

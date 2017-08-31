@@ -33,10 +33,10 @@
           false
         ],
         "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+        "no-unused-variable": true,
         // tslint-misc-rules
         "prefer-es6-imports": true,
-        "prefer-or-operator-over-ternary": true,
-        "camel-case-local-functions": true
+        "prefer-or-operator-over-ternary": true
     },
     "rulesDirectory": [
         "./node_modules/tslint-misc-rules/rules"

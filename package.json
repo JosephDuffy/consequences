@@ -8,7 +8,8 @@
   "scripts": {
     "start": "nodemon",
     "build": "tsc",
-    "lint": "tslint 'src/**/*.ts' --exclude 'src/**/*.d.ts'",
+    "build:watch": "tsc -w",
+    "lint": "tslint 'src/**/*.ts' --exclude 'src/**/*.d.ts' --type-check --project ./tsconfig.json",
     "lint:fix": "npm run lint -- --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate-types": "./types/generate.js"
@@ -16,16 +17,22 @@
   "license": "MIT",
   "repository": "git+https://github.com/JosephDuffy/consequences",
   "dependencies": {
-    "good": "^7.2.0",
-    "good-winston": "^4.0.0",
-    "hapi": "^16.5.2",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-logger-winston": "^0.0.2",
+    "koa-router": "^7.2.1",
     "lokijs": "^1.5.0",
     "mz": "^2.6.0",
+    "reflect-metadata": "^0.1.10",
+    "routing-controllers": "^0.7.1",
+    "typedi": "^0.5.2",
     "winston": "^2.3.1"
   },
   "devDependencies": {
     "@types/core-js": "^0.9.41",
-    "@types/hapi": "^16.1.8",
+    "@types/koa": "^2.0.39",
+    "@types/koa-bodyparser": "^3.0.24",
+    "@types/koa-router": "^7.0.23",
     "@types/lokijs": "^1.2.30",
     "@types/mz": "^0.0.31",
     "@types/node": "^7.0.22",

@@ -14,16 +14,24 @@ function generateModule(moduleName) {
 
     const fileContents = fs.readFileSync(outputFileLocation);
     const fileLines = fileContents.toString().split('\n');
-    const indentedLines = fileLines.map((line) => {
+    const cleanedLines = [];
+
+    for (const line of fileLines) {
+      if (line.includes('function validate')) {
+        // Exclude any "validate*" functions as these are for internal-use only
+        continue;
+      }
+
       // Remove any `declare` statements since we're now wrapping the whole file in our own `declare`
       const cleanedUpLine = line.replace('declare ', '');
 
       // Pad with 4 spaces to keep indentation correct
-      return `    ${cleanedUpLine}`
-    });
+      cleanedLines.push(`    ${cleanedUpLine}`);
+    }
+
     const finalLines = [
       `declare module "consequences/${moduleName}" {`,
-      ...indentedLines,
+      ...cleanedLines,
       '}'
     ];
     const finalContents = finalLines.reduce((file, line) => `${file}${line}\n`, '');

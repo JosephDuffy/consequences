@@ -71,6 +71,10 @@ declare module "consequences/addons" {
          */
         value: any;
     }
+    export interface Action {
+        readonly uniqueId: string;
+        perform(userInputs: UserInput[]): void;
+    }
     export interface Variable {
         /** A unique (to the addon) identifier. This value MUST be consistent across requests and system restarts */
         readonly uniqueId: string;
@@ -154,14 +158,8 @@ declare module "consequences/addons" {
             defaultValue?: any;
         }
     }
-    export interface Action {
-        readonly uniqueId: string;
-        perform(userInputs: UserInput[]): void;
-    }
     export interface AddonInitialiser {
-        name: string;
-        description: string;
-        configOptions?: Addon.ConfigOption[];
+        readonly metadata: AddonInitialiser.Metadata;
         /**
          * Create and return a new `Addon` instance.
          *
@@ -173,6 +171,13 @@ declare module "consequences/addons" {
         createInstance(metadata: Addon.Metadata, configOptions?: {
             [id: string]: any;
         }): Promise<Addon>;
+    }
+    export namespace AddonInitialiser {
+        interface Metadata {
+            readonly name: string;
+            readonly description: string;
+            readonly configOptions?: Addon.ConfigOption[];
+        }
     }
     export interface EventListener {
         /**

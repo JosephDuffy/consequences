@@ -1,13 +1,13 @@
 // Interfaces that are relevant to addons. Used to generate types/addons.d.ts
 
-import Addon from '../../src/models/Addon';
 import Action from '../../src/models/Action';
+import Addon from '../../src/models/Addon';
 import AddonInitialiser from '../../src/models/AddonInitialiser';
-import { EventListener, ActionStep, ConditionStep, Step } from '../../src/models/EventListener';
 import { Condition, ConditionInput, UserInput } from '../../src/models/Condition';
+import { ActionStep, ConditionStep, EventListener, Step } from '../../src/models/EventListener';
 import Package from '../../src/models/Package';
-import Variable from '../../src/models/Variable';
 import UserInputType from '../../src/models/UserInputType';
+import Variable from '../../src/models/Variable';
 
 export {
   Addon,

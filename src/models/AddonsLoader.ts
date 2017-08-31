@@ -1,9 +1,9 @@
 import * as fs from 'mz/fs';
 import * as path from 'path';
-import Addon from './Addon';
-import { Package, validatePackage } from './Package';
 import exec from '../helpers/exec';
-import { AddonInitialiser, validateAddonInitialiser } from './AddonInitialiser';
+
+import AddonInitialiser, { validateAddonInitialiser } from './AddonInitialiser';
+import { validatePackage } from './Package';
 
 export type AddonModule = {
   /**

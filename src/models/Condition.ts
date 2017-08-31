@@ -1,4 +1,3 @@
-import Variable from './Variable';
 import UserInputType from './UserInputType';
 
 /**
