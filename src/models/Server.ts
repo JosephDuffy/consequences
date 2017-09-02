@@ -1,10 +1,10 @@
 import * as Koa from 'koa';
+import koaLogger = require('koa-logger-winston');
 import * as fs from 'mz/fs';
 import * as path from 'path';
-import winston = require('winston');
-import koaLogger = require('koa-logger-winston');
 import { createKoaServer } from 'routing-controllers';
 import { Service } from 'typedi';
+import winston = require('winston');
 
 @Service()
 export default class Server {
@@ -25,6 +25,7 @@ export default class Server {
     winston.info(`HTTP server listening at on port ${listenPort}`);
   }
 
+  // tslint:disable:ban-types
   private async loadControllers(): Promise<Function[]> {
     const controllersDirectory = path.join(__dirname, '../controllers');
 
