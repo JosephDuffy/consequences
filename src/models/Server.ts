@@ -25,7 +25,7 @@ export default class Server {
     winston.info(`HTTP server listening at on port ${listenPort}`);
   }
 
-  private async loadControllers(): Promise<any[]> {
+  private async loadControllers(): Promise<Function[]> {
     const controllersDirectory = path.join(__dirname, '../controllers');
 
     const controllerFiles = await fs.readdir(controllersDirectory);
