@@ -29,19 +29,19 @@
     "winston": "^2.3.1"
   },
   "devDependencies": {
-    "@types/core-js": "^0.9.41",
+    "@types/core-js": "^0.9.43",
     "@types/koa": "^2.0.39",
     "@types/koa-bodyparser": "^3.0.24",
     "@types/koa-router": "^7.0.23",
     "@types/lokijs": "^1.2.30",
     "@types/mz": "^0.0.31",
-    "@types/node": "^7.0.22",
-    "@types/winston": "^2.3.4",
+    "@types/node": "^8.0.26",
+    "@types/winston": "^2.3.5",
     "dts-bundle-generator": "^0.2.0",
     "nodemon": "^1.11.0",
     "ts-node": "^3.3.0",
-    "tslint": "^5.2.0",
+    "tslint": "^5.7.0",
     "tslint-misc-rules": "^3.1.3",
-    "typescript": "^2.3.2"
+    "typescript": "^2.5.2"
   }
 }
