@@ -22,6 +22,16 @@ namespace AddonInitialiser {
 
     readonly description: string;
 
+    /**
+     * When this value is `true` it indicates to consequences that more than one instance
+     * of the addon is supported. When this value is `false` the user will only be able to
+     * create one instance of this addon.
+     *
+     * @type {boolean}
+     * @memberof Metadata
+     */
+    readonly supportsMultipleInstances: boolean;
+
     readonly configOptions?: Addon.ConfigOption[];
   }
 

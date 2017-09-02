@@ -11,7 +11,7 @@ export type AddonModule = {
    *
    * @type {string}
    */
-  name: string;
+  moduleName: string;
 
   /**
    * An object that is capable of creating a new instance of the addon and
@@ -52,15 +52,15 @@ export default class AddonsLoader {
     return [addons, errors];
   }
 
-  public static async loadAddon(name: string, globalModulesPath: string): Promise<AddonModule> {
-    const addonPath = path.join(globalModulesPath, name);
-    const packageJSON = await this.loadPackageJSON(addonPath, name);
+  public static async loadAddon(moduleName: string, globalModulesPath: string): Promise<AddonModule> {
+    const addonPath = path.join(globalModulesPath, moduleName);
+    const packageJSON = await this.loadPackageJSON(addonPath, moduleName);
 
     if (validatePackage(packageJSON)) {
       const mainScriptPath = path.join(addonPath, packageJSON.main);
 
       if (!(await fs.exists(mainScriptPath))) {
-        throw new Error(`${name}'s main script does not exist`);
+        throw new Error(`${moduleName}'s main script does not exist`);
       }
 
       // tslint:disable-next-line:variable-name
@@ -71,17 +71,17 @@ export default class AddonsLoader {
 
         if (AddonInitialiser.validate(initialiser)) {
           return {
-            name,
+            moduleName,
             initialiser,
           };
         } else {
-          throw new Error(`${name}'s main script must export a class that implements AddonInitialiser`);
+          throw new Error(`${moduleName}'s main script must export a class that implements AddonInitialiser`);
         }
       } else {
-        throw new Error(`${name}'s main script's default export must be a function`);
+        throw new Error(`${moduleName}'s main script's default export must be a function`);
       }
     } else {
-      throw new Error(`${name}'s package.json is missing a required key`);
+      throw new Error(`${moduleName}'s package.json is missing a required key`);
     }
   }
 

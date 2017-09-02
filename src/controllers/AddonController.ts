@@ -1,27 +1,18 @@
-import AddonInitialiser from '../models/AddonInitialiser';
-import Core from '../models/Core';
-
 import { Get, JsonController} from 'routing-controllers';
 import { Inject, Service } from 'typedi';
+
+import AddonsManager, { AddonStatus } from '../models/AddonsManager';
 
 @JsonController('/addons')
 @Service()
 export default class AddonController {
 
   @Inject()
-  private core: Core;
+  private addonsManager: AddonsManager;
 
-  @Get('/installed')
-  public async getInstalledAddons(): Promise<{ [moduleName: string]: AddonInitialiser.Metadata }> {
-    const { addonInitialisers } = this.core;
-
-    const addons: { [moduleName: string]: AddonInitialiser.Metadata } = {};
-
-    for (const moduleName of Object.keys(addonInitialisers)) {
-      addons[moduleName] = addonInitialisers[moduleName].metadata;
-    }
-
-    return addons;
+  @Get('/')
+  public async getAddonsStatus(): Promise<AddonStatus[]> {
+    return this.addonsManager.addonStatus;
   }
 
 }

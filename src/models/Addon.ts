@@ -57,8 +57,22 @@ interface Addon {
 
 namespace Addon {
   export interface Metadata {
-    id: string;
-    name: string;
+    /**
+     * A unique id for this instance of the addon. This is created by conquences and may change in the future
+     *
+     * @type {string}
+     * @memberof Metadata
+     */
+    readonly id: string;
+
+    /**
+     * The name for this instance of the addon. This will default to the value provided by the
+     * `AddonInitialiser`, but may be changed by the user.
+     *
+     * @type {string}
+     * @memberof Metadata
+     */
+    readonly name: string;
   }
 
   export interface ConfigOption {

@@ -1,20 +1,22 @@
 import Loki = require('lokijs');
 
+import Addon from './Addon';
+import { AddonOptions } from './AddonsManager';
 import EventListener from './EventListener';
 
-class Database {
+export default class Database {
 
   /// The Loki instance backing the database
   private loki: Loki;
 
-  private addonOptions: LokiCollection<AddonOptionsWrapper>;
+  private addons: LokiCollection<AddonSchema>;
 
   private eventListeners: LokiCollection<EventListener>;
 
   constructor(filename: string = 'database.json') {
     this.loki = new Loki(filename);
 
-    this.addonOptions = this.loki.addCollection<AddonOptionsWrapper>('addon-options', {
+    this.addons = this.loki.addCollection<AddonSchema>('addon-options', {
       indices: ['moduleName'],
     });
 
@@ -23,14 +25,15 @@ class Database {
     });
   }
 
-  public optionsForAddon(moduleName: string): AddonOptions | null {
-    const storedObject = this.addonOptions.findOne({ moduleName });
+  public retrieveAllAddons(): AddonSchema[] {
+    return this.addons.find();
+  }
 
-    if (storedObject === null) {
-      return null;
-    }
-
-    return storedObject === null ? null : storedObject.options;
+  public createAddon(moduleName: string, options?: Addon.ConfigOption[]) {
+    this.addons.insertOne({
+      moduleName,
+      options,
+    });
   }
 
   public retrieveAllEventListeners(): EventListener[] {
@@ -43,13 +46,7 @@ class Database {
 
 }
 
-export type AddonOptions = {
-  [id: string]: any;
-};
-
-type AddonOptionsWrapper = {
+export type AddonSchema = {
   moduleName: string;
-  options: AddonOptions;
+  options?: AddonOptions;
 };
-
-export default Database;
