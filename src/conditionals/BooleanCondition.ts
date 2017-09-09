@@ -5,13 +5,9 @@ namespace BooleanCondition {
 
   export class True implements Condition {
 
-    public get uniqueId() {
-      return 'boolean_true';
-    }
+    public readonly uniqueId = 'boolean_true';
 
-    public get name() {
-      return 'is true';
-    }
+    public readonly name = 'is true';
 
     public supports(input: any): boolean {
       return input === true || input === false;
@@ -25,13 +21,9 @@ namespace BooleanCondition {
 
   export class False implements Condition {
 
-    public get uniqueId() {
-      return 'boolean_false';
-    }
+    public readonly uniqueId = 'boolean_false';
 
-    public get name() {
-      return 'is false';
-    }
+    public readonly name = 'is false';
 
     public supports(input: any): boolean {
       return input === true || input === false;

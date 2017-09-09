@@ -59,6 +59,9 @@ export interface ConditionInput {
   /** A flag denoting whether the input requires a value for the condition to evaluated */
   readonly optional: boolean;
 
+  /** A flag denoting whether the user is permitted to enter more than 1 value for this input */
+  readonly allowsMultiple: boolean;
+
   /** The data type to ask the user to input */
   readonly type: UserInputType;
 

@@ -6,27 +6,21 @@ namespace NumericCondition {
 
   export class Input implements ConditionInput {
 
-    public get uniqueId() {
-      return 'rhs_input';
-    }
+    public readonly uniqueId = 'rhs_input';
 
-    public get optional() {
-      return false;
-    }
+    public readonly optional = false;
 
-    public get type() {
-      return UserInputType.number;
-    }
+    public readonly allowsMultiple = false;
+
+    public readonly type = UserInputType.number;
 
   }
 
-  export class Base {
+  abstract class Base {
 
-    public get userInputs() {
-      return [
-        new Input(),
-      ];
-    }
+    public readonly userInputs = [
+      new Input(),
+    ];
 
     public supports(input: any): boolean {
       return Number.isFinite(input);
@@ -44,20 +38,16 @@ namespace NumericCondition {
     }
 
     protected checkValues(lhs: any, rhs: any): boolean {
-      throw new Error('`checkValues` method must be overriden by subclasses');
+      throw new Error('`checkValues` method must be overridden by subclasses');
     }
 
   }
 
   export class Equal extends Base implements Condition {
 
-    public get uniqueId() {
-      return 'numeric_eq';
-    }
+    public readonly uniqueId = 'numeric_eq';
 
-    public get name() {
-      return 'is equal to';
-    }
+    public readonly name = 'is equal to';
 
     protected checkValues(lhs: any, rhs: any): boolean {
       return lhs === rhs;
@@ -67,13 +57,9 @@ namespace NumericCondition {
 
   export class NotEqual extends Base implements Condition {
 
-    public get uniqueId() {
-      return 'numeric_not_eq';
-    }
+    public readonly uniqueId = 'numeric_not_eq';
 
-    public get name() {
-      return 'is not equal to';
-    }
+    public readonly name = 'is not equal to';
 
     protected checkValues(lhs: any, rhs: any): boolean {
       return lhs !== rhs;
@@ -83,13 +69,9 @@ namespace NumericCondition {
 
   export class LessThan extends Base implements Condition {
 
-    public get uniqueId() {
-      return 'numeric_lt';
-    }
+    public readonly uniqueId = 'numeric_lt';
 
-    public get name() {
-      return 'is less than';
-    }
+    public readonly name = 'is less than';
 
     protected checkValues(lhs: any, rhs: any): boolean {
       return lhs < rhs;
@@ -99,13 +81,9 @@ namespace NumericCondition {
 
   export class GreaterThan extends Base implements Condition {
 
-    public get uniqueId() {
-      return 'numeric_gt';
-    }
+    public readonly uniqueId = 'numeric_gt';
 
-    public get name() {
-      return 'is greater than';
-    }
+    public readonly name = 'is greater than';
 
     protected checkValues(lhs: any, rhs: any): boolean {
       return lhs > rhs;
@@ -115,13 +93,9 @@ namespace NumericCondition {
 
   export class LessThanOrEqualTo extends Base implements Condition {
 
-    public get uniqueId() {
-      return 'numeric_lte';
-    }
+    public readonly uniqueId = 'numeric_lte';
 
-    public get name() {
-      return 'is less than or equal to';
-    }
+    public readonly name = 'is less than or equal to';
 
     protected checkValues(lhs: any, rhs: any): boolean {
       return lhs <= rhs;
@@ -131,13 +105,9 @@ namespace NumericCondition {
 
   export class GreaterOrEqualToThan extends Base implements Condition {
 
-    public get uniqueId() {
-      return 'numeric_gte';
-    }
+    public readonly uniqueId = 'numeric_gte';
 
-    public get name() {
-      return 'is greater than or equal to';
-    }
+    public readonly name = 'is greater than or equal to';
 
     protected checkValues(lhs: any, rhs: any): boolean {
       return lhs >= rhs;
