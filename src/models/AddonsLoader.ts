@@ -1,5 +1,6 @@
 import * as fs from 'mz/fs';
 import * as path from 'path';
+import winston = require('winston');
 import exec from '../helpers/exec';
 
 import AddonInitialiser from './AddonInitialiser';
@@ -8,8 +9,6 @@ import { validatePackage } from './Package';
 export type AddonModule = {
   /**
    * The name of the addon's npm module
-   *
-   * @type {string}
    */
   moduleName: string;
 
@@ -17,8 +16,6 @@ export type AddonModule = {
    * An object that is capable of creating a new instance of the addon and
    * provides some basic metadata about the addon. This object is provided
    * by the addon itself
-   *
-   * @type {AddonInitialiser}
    */
   initialiser: AddonInitialiser;
 };
@@ -26,7 +23,7 @@ export type AddonModule = {
 export default class AddonsLoader {
 
   public static async globalModulesPath(): Promise<string> {
-    return exec('npm root -g');
+    return process.env.CONSEQUENCES_MODULES_PATH || exec('npm root -g');
   }
 
   public static async loadAddons(): Promise<[AddonModule[], Error[]]> {
@@ -34,6 +31,9 @@ export default class AddonsLoader {
     const errors: Error[] = [];
 
     const globalModulesPath = await this.globalModulesPath();
+
+    winston.info(`Checking for consequences modules in ${globalModulesPath}`);
+
     const globalModules = await fs.readdir(globalModulesPath);
 
     const addonNames = globalModules.filter((moduleName) => {
@@ -42,6 +42,7 @@ export default class AddonsLoader {
 
     for (const addonName of addonNames) {
       try {
+        winston.info(`Trying to load a globally installed module named ${addonName}`);
         const addon = await this.loadAddon(addonName, globalModulesPath);
         addons.push(addon);
       } catch (error) {

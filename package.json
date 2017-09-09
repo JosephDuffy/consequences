@@ -17,6 +17,7 @@
   "license": "MIT",
   "repository": "git+https://github.com/JosephDuffy/consequences",
   "dependencies": {
+    "http-errors": "^1.6.2",
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",
     "koa-logger-winston": "^0.0.2",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@types/core-js": "^0.9.43",
+    "@types/http-errors": "^1.6.1",
     "@types/koa": "^2.0.39",
     "@types/koa-bodyparser": "^3.0.24",
     "@types/koa-router": "^7.0.23",

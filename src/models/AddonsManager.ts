@@ -6,6 +6,7 @@ import AddonInitialiser from './AddonInitialiser';
 import AddonsLoader from './AddonsLoader';
 import AddonStatus from './AddonStatus';
 import Database, { AddonOptions, AddonSchema } from './Database';
+import Variable from './Variable';
 
 @Service()
 export default class AddonsManager {
@@ -15,7 +16,9 @@ export default class AddonsManager {
 
   private initialisers: { [moduleName: string]: AddonInitialiser };
 
-  private instances: { [moduleName: string]: AddonInstance[] };
+  private _instances: { [moduleName: string]: AddonInstance[] };
+
+  private _variables: { [addonId: string]: Variable[] };
 
   public get addonStatus(): AddonStatus[] {
     const status: AddonStatus[] = [];
@@ -23,7 +26,7 @@ export default class AddonsManager {
     for (const moduleName of Object.keys(this.initialisers)) {
       const initialiser = this.initialisers[moduleName];
 
-      const instances = (this.instances[moduleName] || []).map((instance) => {
+      const instances = (this._instances[moduleName] || []).map((instance) => {
         return {
           metadata: instance.instance.metadata,
           options: instance.options,
@@ -40,9 +43,18 @@ export default class AddonsManager {
     return status;
   }
 
+  public get instances(): { [moduleName: string]: AddonInstance[] } {
+    return this._instances;
+  }
+
+  public get variables(): { [addonId: string]: Variable[] } {
+    return this._variables;
+  }
+
   constructor() {
     this.initialisers = {};
-    this.instances = {};
+    this._instances = {};
+    this._variables = {};
   }
 
   public async loadAddons() {
@@ -72,6 +84,13 @@ export default class AddonsManager {
 
       try {
         const instance = await this.loadAddonFromDatabase(addonToLoadInfo, initialiser);
+        const instanceId = instance.instance.metadata.instanceId;
+
+        if (!this._instances[instanceId]) {
+          this._instances[instanceId] = [];
+        }
+
+        this._instances[instanceId].push(instance);
       } catch (error) {
         winston.error(error);
       }
@@ -85,19 +104,19 @@ export default class AddonsManager {
       throw new Error(`No module with the name ${moduleName} was found`);
     }
 
-    if (!initialiser.metadata.supportsMultipleInstances && this.instances[moduleName] && this.instances[moduleName].length > 0) {
+    if (!initialiser.metadata.supportsMultipleInstances && this._instances[moduleName] && this._instances[moduleName].length > 0) {
       throw new Error(`Cannot create more than one instance of ${initialiser.metadata.name} from ${moduleName}`);
     }
 
     const metadata: Addon.Metadata = {
-      id: moduleName, // TODO: Generate a unique id
+      instanceId: moduleName, // TODO: Generate a unique id
       name: initialiser.metadata.name, // TODO: Allow user to change this
     };
 
     const instance = await this.createAddonInstance(metadata, options, initialiser, moduleName);
 
     this.database.createAddon({
-      id: metadata.id,
+      instanceId: metadata.instanceId,
       moduleName,
       displayName: metadata.name,
       options,
@@ -107,10 +126,10 @@ export default class AddonsManager {
   }
 
   private async loadAddonFromDatabase(data: AddonSchema, initialiser: AddonInitialiser): Promise<AddonInstance> {
-    winston.info(`Attempted to load stored instance of ${data.displayName} from ${data.moduleName}`);
+    winston.info(`Attempting to load stored instance of ${data.displayName} from ${data.moduleName}`);
 
     const metadata: Addon.Metadata = {
-      id: data.id,
+      instanceId: data.instanceId,
       name: data.displayName,
     };
 
@@ -130,11 +149,24 @@ export default class AddonsManager {
     }
 
     const addonInstance = await initialiser.createInstance(metadata, options);
+    const addonId = metadata.instanceId;
 
-    winston.info(`Created addon instance ${initialiser.metadata.name} from ${moduleName} with id ${metadata.id}`);
+    winston.info(`Created addon instance ${initialiser.metadata.name} from ${moduleName} with id ${addonId}`);
 
-    if (this.instances[metadata.id] === undefined) {
-      this.instances[metadata.id] = [];
+    if (addonInstance.loadVariables) {
+      if (addonInstance.onVariableAdded) {
+        addonInstance.onVariableAdded = this.createVariableAddedFunction(addonInstance);
+      }
+
+      if (addonInstance.onVariableRemoved) {
+        addonInstance.onVariableRemoved = this.createVariableRemovedFunction(addonInstance);
+      }
+
+      this._variables[addonId] = await addonInstance.loadVariables();
+    }
+
+    if (this._instances[metadata.instanceId] === undefined) {
+      this._instances[metadata.instanceId] = [];
     }
 
     const storedInstance = {
@@ -142,9 +174,33 @@ export default class AddonsManager {
       options,
     };
 
-    this.instances[addonInstance.metadata.id].push(storedInstance);
+    this._instances[addonInstance.metadata.instanceId].push(storedInstance);
 
     return storedInstance;
+  }
+
+  private createVariableAddedFunction(addon: Addon): (variable: Variable) => void {
+    const addonId = addon.metadata.instanceId;
+
+    return (variable: Variable) => {
+      if (!this._variables.hasOwnProperty(addonId)) {
+        this._variables[addonId] = [];
+      }
+
+      this._variables[addonId].push(variable);
+    };
+  }
+
+  private createVariableRemovedFunction(addon: Addon): (variable: Variable) => void {
+    const addonId = addon.metadata.instanceId;
+
+    return (removedVariable: Variable) => {
+      if (!this._variables.hasOwnProperty(addonId)) {
+        return;
+      }
+
+      this._variables[addonId] = this._variables[addonId].filter(variable => variable.uniqueId !== removedVariable.uniqueId);
+    };
   }
 }
 

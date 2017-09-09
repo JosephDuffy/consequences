@@ -1,5 +1,4 @@
 import Condition from './Condition';
-import UserInputType from './UserInputType';
 import Variable from './Variable';
 
 interface Addon {
@@ -9,79 +8,65 @@ interface Addon {
    *
    * N.B.
    * This object is provided to the `AddonInitialiser` and should not be modified
-   *
-   * @type {Metadata}
-   * @memberof Addon
    */
   readonly metadata: Addon.Metadata;
 
   /**
-   * An array of variables this addon provides
+   * An optional function that should load and return any variables the addon has. Once this
+   * method has been called the `onVariableAdded` and `onVariableRemoved` functions (if
+   * implemented) should start being called.
    *
-   * @type {Promise<Variable[]>}
-   * @memberof Addon
+   * If this method is unimplemented it is assumed that the addon does not offer any variables.
+   *
+   * @returns {Promise<Variable[]>} A promise that will resolve to an array of variables
    */
-  readonly variables?: Promise<Variable[]>;
+  loadVariables?(): Promise<Variable[]>;
 
   /**
-   * A function that the addon should call when it has added a variable
-   *
-   * @memberof Addon
+   * A function that the addon must call when it has added a variable
    */
-  onVariableAdded?: (variable: Variable) => void;
+  onVariableAdded?(variable: Variable): void;
 
   /**
-   * A function that the addon should call when it has removed a variable
-   *
-   * @memberof Addon
+   * A function that the addon must call when it has removed a variable
    */
-  onVariableRemoved?: (variable: Variable) => void;
-
-  readonly conditions?: Promise<Condition[]>;
+  onVariableRemoved?(variable: Variable): void;
 
   /**
-   * A function that the addon should call when it has added a condition
+   * An optional function that should load and return any conditions the addon has. Once this
+   * method has been called the `onConditionAdded` and `onConditionRemoved` functions (if
+   * implemented) should start being called.
    *
-   * @memberof Addon
+   * If this method is unimplemented it is assumed that the addon does not offer any conditions.
+   *
+   * @returns {Promise<Condition[]>} A promise that will resolve to an array of conditions
    */
-  onConditionAdded?: (condition: Condition) => void;
+  loadConditions?(): Promise<Condition[]>;
 
   /**
-   * A function that the addon should call when it has removed a condition
-   *
-   * @memberof Addon
+   * A function that the addon must call when it has added a condition
    */
-  onConditionRemoved?: (condition: Condition) => void;
+  onConditionAdded?(condition: Condition): void;
+
+  /**
+   * A function that the addon must call when it has removed a condition
+   */
+  onConditionRemoved?(condition: Condition): void;
 
 }
 
 namespace Addon {
   export interface Metadata {
     /**
-     * A unique id for this instance of the addon. This is created by conquences and may change in the future
-     *
-     * @type {string}
-     * @memberof Metadata
+     * A unique id for this instance of the addon. This is created by consequences and may change in the future
      */
-    readonly id: string;
+    readonly instanceId: string;
 
     /**
      * The name for this instance of the addon. This will default to the value provided by the
      * `AddonInitialiser`, but may be changed by the user.
-     *
-     * @type {string}
-     * @memberof Metadata
      */
     readonly name: string;
-  }
-
-  export interface ConfigOption {
-    id: string;
-    required: boolean;
-    name: string;
-    type: UserInputType;
-    hint?: string;
-    defaultValue?: any;
   }
 }
 

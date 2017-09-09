@@ -8,9 +8,9 @@ This is achieved by loading globally installed addons, automatically performing 
 
 On the surface Consequences does not offer a lot. From a user perspective it is comprised on:
 
- - Variables - A value that can change, e.g. the brightness value of a light bulb, or the status of a motion sensor
- - Condition - A rule that can be evaluated to either true of false, e.g. "the brightness of the lounge light bulb is 0"
- - Action - Something that will change the state of the application, e.g. "set the brightness of the lounge light to 45%"
+- Variables - A value that can change, e.g. the brightness value of a light bulb, or the status of a motion sensor
+- Condition - A rule that can be evaluated to either true of false, e.g. "the brightness of the lounge light bulb is 0"
+- Action - Something that will change the state of the application, e.g. "set the brightness of the lounge light to 45%"
 
 ### Chains
 
@@ -29,18 +29,19 @@ Motion Sensor (variable)
             ├── Set the lounge light bulb's temperature to soft (action)
             └── Turn light bulb up to 30% (action)
 ```
+
 ## Status
 
 This project is currently under development and is considered unstable. Until a stable 1.0 version is released I would recommend you do not use this project, unless you wish to contribute.
 
 ## Roadmap
 
- - [X] Provide TypeScript types for addon authors
- - [X] Load globally install addons
- - [ ] Provide a web API to retrieve and config addons
- - [ ] Provide a web API to modify variables
- - [ ] Provide a web API to setup "chains" e.g. condition[1-*] => action
- - [ ] Create a web GUI (in another project)
+- [X] Provide TypeScript types for addon authors
+- [X] Load globally install addons
+- [X] Provide a web API to retrieve and create addons
+- [X] Provide a web API to retrieve the status of and modify variables
+- [ ] Provide a web API to setup "chains" e.g. condition[1-*] => action
+- [ ] Create a web GUI (in another project)
 
 ## License
 

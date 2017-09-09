@@ -6,7 +6,9 @@ declare module "consequences/addons" {
         number = 3,
     }
     export interface Condition {
-        /** A unique (to the addon) identifier. This value MUST be consistent across requests and system restarts */
+        /**
+         * A unique (to the addon) identifier. This value MUST be consistent across requests and system restarts
+         */
         readonly uniqueId: string;
         /**
          * A user-facing string. Will be used in the format `${inputName} ${conditionName}`
@@ -17,9 +19,11 @@ declare module "consequences/addons" {
         /** An optional array of extra inputs that the user may provide */
         readonly extraInputs?: ConditionInput[];
         /**
-         * Checks if the provided input it supported by this condition. If this method
-         * indicates that this condition supports the provided input it will be shown to the
-         * user
+         * Checks if the provided input it supported by this condition. This should be a simple
+         * type check, e.g. "is a boolean" or "is a known variable"
+         *
+         * This method may be called twice for the same input -- once with the `Variable` itself
+         * and then with the value of the variable.
          *
          * @param input The value to check support for
          * @returns `true` if the value is supported, otherwise `false`
@@ -35,22 +39,36 @@ declare module "consequences/addons" {
         evaluate(input: any, userInputs?: UserInput[]): boolean;
     }
     export interface ConditionInput {
-        /** A unique (to the the condition) identifier. This value MUST be consistent across requests and system restarts */
+        /**
+         * A unique (to the the condition) identifier. This value MUST be consistent across requests and system restarts
+         */
         readonly uniqueId: string;
-        /** The default value to pre-populate the input field with */
+        /**
+         * The default value to pre-populate the input field with
+         */
         readonly defaultValue?: any;
-        /** A user-facing string to help the user identify the input */
+        /**
+         * A user-facing string to help the user identify the input
+         */
         readonly name?: string;
-        /** A user-facing string to provide an extra hint to the user */
+        /**
+         * A user-facing string to provide an extra hint to the user
+         */
         readonly hint?: string;
-        /** A flag denoting whether the input requires a value for the condition to evaluated */
+        /**
+         * A flag denoting whether the input requires a value for the condition to evaluated
+         */
         readonly optional: boolean;
-        /** A flag denoting whether the user is permitted to enter more than 1 value for this input */
+        /**
+         * A flag denoting whether the user is permitted to enter more than 1 value for this input
+         */
         readonly allowsMultiple: boolean;
-        /** The data type to ask the user to input */
+        /**
+         * The data type to ask the user to input
+         */
         readonly type: UserInputType;
         /**
-         * An optional function that can reject a user's input.
+         * An optional function that can reject a user's input
          *
          * @param input The user's input value. Will be of type `type`
          * @returns A promise that resolves to string to show to the user in the case of rejection, or null if the input was accepted
@@ -60,16 +78,10 @@ declare module "consequences/addons" {
     export interface UserInput {
         /**
          * The unique identifier of the input, as specified by the `ConditionInput`
-         *
-         * @type {string}
-         * @memberof UserInput
          */
         uniqueId: string;
         /**
          * The value the user input
-         *
-         * @type {*}
-         * @memberof UserInput
          */
         value: any;
     }
@@ -83,7 +95,7 @@ declare module "consequences/addons" {
         /** The name of the variable */
         readonly name: string;
         /** The current value of the variable */
-        readonly currentValue: any;
+        retrieveValue(): Promise<any>;
         /**
          * Adds the provided listener to a list of functions that will be called
          * when the values updates
@@ -98,6 +110,10 @@ declare module "consequences/addons" {
         removeChangeEventListener(listener: () => void): void;
         /**
          * Update the value of the variable
+         *
+         * This method may throw, in which case the contents of the error will be displayed to the user and
+         * it will be assumed that the value was not updated.
+         *
          * @param newValue The new value of the variable
          */
         updateValue?(newValue: any): void;
@@ -108,48 +124,104 @@ declare module "consequences/addons" {
          *
          * N.B.
          * This object is provided to the `AddonInitialiser` and should not be modified
-         *
-         * @type {Metadata}
-         * @memberof Addon
          */
         readonly metadata: Addon.Metadata;
         /**
-         * An array of variables this addon provides
+         * An optional function that should load and return any variables the addon has. Once this
+         * method has been called the `onVariableAdded` and `onVariableRemoved` functions (if
+         * implemented) should start being called.
          *
-         * @type {Promise<Variable[]>}
-         * @memberof Addon
+         * If this method is unimplemented it is assumed that the addon does not offer any variables.
+         *
+         * @returns {Promise<Variable[]>} A promise that will resolve to an array of variables
          */
-        readonly variables?: Promise<Variable[]>;
+        loadVariables?(): Promise<Variable[]>;
         /**
-         * A function that the addon should call when it has added a variable
-         *
-         * @memberof Addon
+         * A function that the addon must call when it has added a variable
          */
-        onVariableAdded?: (variable: Variable) => void;
+        onVariableAdded?(variable: Variable): void;
         /**
-         * A function that the addon should call when it has removed a variable
-         *
-         * @memberof Addon
+         * A function that the addon must call when it has removed a variable
          */
-        onVariableRemoved?: (variable: Variable) => void;
-        readonly conditions?: Promise<Condition[]>;
+        onVariableRemoved?(variable: Variable): void;
         /**
-         * A function that the addon should call when it has added a condition
+         * An optional function that should load and return any conditions the addon has. Once this
+         * method has been called the `onConditionAdded` and `onConditionRemoved` functions (if
+         * implemented) should start being called.
          *
-         * @memberof Addon
+         * If this method is unimplemented it is assumed that the addon does not offer any conditions.
+         *
+         * @returns {Promise<Condition[]>} A promise that will resolve to an array of conditions
          */
-        onConditionAdded?: (condition: Condition) => void;
+        loadConditions?(): Promise<Condition[]>;
         /**
-         * A function that the addon should call when it has removed a condition
-         *
-         * @memberof Addon
+         * A function that the addon must call when it has added a condition
          */
-        onConditionRemoved?: (condition: Condition) => void;
+        onConditionAdded?(condition: Condition): void;
+        /**
+         * A function that the addon must call when it has removed a condition
+         */
+        onConditionRemoved?(condition: Condition): void;
     }
     export namespace Addon {
         interface Metadata {
-            id: string;
-            name: string;
+            /**
+             * A unique id for this instance of the addon. This is created by consequences and may change in the future
+             */
+            readonly instanceId: string;
+            /**
+             * The name for this instance of the addon. This will default to the value provided by the
+             * `AddonInitialiser`, but may be changed by the user.
+             */
+            readonly name: string;
+        }
+    }
+    export interface AddonInitialiser {
+        /**
+         * Information about the addon that can be used prior to the addon
+         * being setup, along with the information that's required to create
+         * a new instance of the addon.
+         */
+        readonly metadata: AddonInitialiser.Metadata;
+        /**
+         * Create and return a new `Addon` instance.
+         *
+         * This method must be implemented by addon authors.
+         *
+         * The `configOptions` parameter will be an array of options that were provided
+         * by the `metadata.configOptions` property. If an option's `required` property
+         * is `true` it is guaranteed that that option will be in the array and will
+         * have passed type checking.
+         *
+         * @param {Addon.Metadata} metadata
+         * @param {{ [id: string]: any; }} [configOptions]
+         * @returns {Promise<Addon>}
+         */
+        createInstance(metadata: Addon.Metadata, configOptions?: {
+            [id: string]: any;
+        }): Promise<Addon>;
+    }
+    export namespace AddonInitialiser {
+        interface Metadata {
+            /**
+             * The user-friendly display name for the addon.
+             */
+            readonly name: string;
+            /**
+             * A user-friendly description of the addon.
+             */
+            readonly description: string;
+            /**
+             * When this value is `true` it indicates to consequences that more than one instance
+             * of the addon is supported. When this value is `false` the user will only be able to
+             * create one instance of this addon. For example, an addon may support multiple accounts
+             * on the same platform, which would create multiple distinct instances of the addon.
+             */
+            readonly supportsMultipleInstances: boolean;
+            /**
+             * Configuration options that may be passed to the `createInstance` function.
+             */
+            readonly configOptions?: AddonInitialiser.ConfigOption[];
         }
         interface ConfigOption {
             id: string;
@@ -160,40 +232,13 @@ declare module "consequences/addons" {
             defaultValue?: any;
         }
     }
-    export interface AddonInitialiser {
-        readonly metadata: AddonInitialiser.Metadata;
-        /**
-         * Create and return a new `Addon` instance.
-         *
-         * @param {Addon.Metadata} metadata
-         * @param {{ [id: string]: any; }} [configOptions]
-         * @returns {Promise<Addon>}
-         * @memberof AddonInitialiser
-         */
-        createInstance(metadata: Addon.Metadata, configOptions?: {
-            [id: string]: any;
-        }): Promise<Addon>;
-    }
-    export namespace AddonInitialiser {
-        interface Metadata {
-            readonly name: string;
-            readonly description: string;
-            readonly configOptions?: Addon.ConfigOption[];
-        }
-    }
     export interface EventListener {
         /**
          * The unique identifier of the module to load the variable from
-         *
-         * @type {string}
-         * @memberof EventListener
          */
         readonly moduleId: string;
         /**
          * The unique identifier of the variable to be watched for changes
-         *
-         * @type {string}
-         * @memberof EventListener
          */
         readonly variableId: string;
         /**
@@ -201,9 +246,6 @@ declare module "consequences/addons" {
          *
          * This array is actually a tree structure, enabling for chains of zero or more
          * conditions, eventually leading to a step to be performed, if all the conditions are met.
-         *
-         * @type {Step[]}
-         * @memberof EventListener
          */
         readonly steps: Step[];
     }

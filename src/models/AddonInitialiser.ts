@@ -1,4 +1,5 @@
 import Addon from './Addon';
+import UserInputType from './UserInputType';
 
 interface AddonInitialiser {
 
@@ -6,9 +7,6 @@ interface AddonInitialiser {
    * Information about the addon that can be used prior to the addon
    * being setup, along with the information that's required to create
    * a new instance of the addon.
-   *
-   * @type {AddonInitialiser.Metadata}
-   * @memberof AddonInitialiser
    */
   readonly metadata: AddonInitialiser.Metadata;
 
@@ -25,7 +23,6 @@ interface AddonInitialiser {
    * @param {Addon.Metadata} metadata
    * @param {{ [id: string]: any; }} [configOptions]
    * @returns {Promise<Addon>}
-   * @memberof AddonInitialiser
    */
   createInstance(metadata: Addon.Metadata, configOptions?: { [id: string]: any; }): Promise<Addon>;
 
@@ -35,17 +32,11 @@ namespace AddonInitialiser {
   export interface Metadata {
     /**
      * The user-friendly display name for the addon.
-     *
-     * @type {string}
-     * @memberof Metadata
      */
     readonly name: string;
 
     /**
      * A user-friendly description of the addon.
-     *
-     * @type {string}
-     * @memberof Metadata
      */
     readonly description: string;
 
@@ -54,19 +45,22 @@ namespace AddonInitialiser {
      * of the addon is supported. When this value is `false` the user will only be able to
      * create one instance of this addon. For example, an addon may support multiple accounts
      * on the same platform, which would create multiple distinct instances of the addon.
-     *
-     * @type {boolean}
-     * @memberof Metadata
      */
     readonly supportsMultipleInstances: boolean;
 
     /**
      * Configuration options that may be passed to the `createInstance` function.
-     *
-     * @type {Addon.ConfigOption[]}
-     * @memberof Metadata
      */
-    readonly configOptions?: Addon.ConfigOption[];
+    readonly configOptions?: AddonInitialiser.ConfigOption[];
+  }
+
+  export interface ConfigOption {
+    id: string;
+    required: boolean;
+    name: string;
+    type: UserInputType;
+    hint?: string;
+    defaultValue?: any;
   }
 
   export function validate(arg: any): arg is AddonInitialiser {

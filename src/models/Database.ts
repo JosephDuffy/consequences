@@ -1,6 +1,5 @@
 import Loki = require('lokijs');
 
-import Addon from './Addon';
 import EventListener from './EventListener';
 
 export default class Database {
@@ -67,12 +66,12 @@ export default class Database {
 }
 
 export type AddonSchema = {
-  id: string;
+  instanceId: string;
   moduleName: string;
   displayName: string;
   options?: AddonOptions;
 };
 
 export type AddonOptions = {
-  [id: string]: any;
+  [instanceId: string]: any;
 };

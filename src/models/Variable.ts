@@ -11,7 +11,7 @@ interface Variable {
   readonly name: string;
 
   /** The current value of the variable */
-  readonly currentValue: any;
+  retrieveValue(): Promise<any>;
 
   /**
    * Adds the provided listener to a list of functions that will be called
@@ -29,6 +29,10 @@ interface Variable {
 
   /**
    * Update the value of the variable
+   *
+   * This method may throw, in which case the contents of the error will be displayed to the user and
+   * it will be assumed that the value was not updated.
+   *
    * @param newValue The new value of the variable
    */
   updateValue?(newValue: any): void;
