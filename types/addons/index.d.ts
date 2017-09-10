@@ -99,6 +99,10 @@ declare module "consequences/addons" {
         /**
          * Adds the provided listener to a list of functions that will be called
          * when the values updates
+         *
+         * Even if the addon itself does not automatically know when its value has changed
+         * the `listener` function MUST be called when the value is updated via the `updateValue` function
+         *
          * @param listener The function to be called when the value is updated
          */
         addChangeEventListener(listener: () => void): void;
