@@ -1,7 +1,6 @@
-import * as createError from 'http-errors';
-import { Context } from 'koa';
-import { Body, Ctx, Get, JsonController, Param, Post, Put } from 'routing-controllers';
+import { Body, Get, HttpError, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers';
 import { Inject, Service } from 'typedi';
+import * as winston from 'winston';
 
 import Addon from '../models/Addon';
 import AddonsManager from '../models/AddonsManager';
@@ -36,8 +35,8 @@ export default class AddonController {
   }
 
   @Get('/:moduleName/:addonId/variables/')
+  @OnUndefined(204)
   public async getAddonVariables(
-    @Ctx() context: Context,
     @Param('moduleName') moduleName: string,
     @Param('addonId') addonId: string,
   ): Promise<VariableState[]> {
@@ -46,7 +45,6 @@ export default class AddonController {
     const variables = this.addonsManager.variables[instance.metadata.instanceId];
 
     if (!variables) {
-      context.status = 204;
       return;
     }
 
@@ -81,8 +79,8 @@ export default class AddonController {
   }
 
   @Put('/:moduleName/:addonId/variables/:variableId/value')
-  public updateAddonVariableValue(
-    @Ctx() context: Context,
+  @OnUndefined(204)
+  public async updateAddonVariableValue(
     @Param('moduleName') moduleName: string,
     @Param('addonId') addonId: string,
     @Param('variableId') variableId: string,
@@ -91,14 +89,14 @@ export default class AddonController {
     const variable = this.retrieveVariable(moduleName, addonId, variableId);
 
     if (!variable.updateValue) {
-      throw createError(400, 'Variable does not support being updated');
+      throw new HttpError(400, 'Variable does not support being updated');
     }
 
     try {
-      variable.updateValue(body.newValue);
-      context.status = 204;
+      await variable.updateValue(body.newValue);
     } catch (error) {
-      throw createError(400, `Addon rejected value`, { addonError: error });
+      winston.error(error);
+      throw new HttpError(400, `Addon failed to set value. See logs for more information`);
     }
   }
 
@@ -106,13 +104,13 @@ export default class AddonController {
     const addonInstances = this.addonsManager.instances[moduleName];
 
     if (!addonInstances) {
-      throw createError(404, `An addon with the module name ${moduleName} was not found`);
+      throw new HttpError(404, `An addon with the module name ${moduleName} was not found`);
     }
 
     const addonInstance = addonInstances.find(instance => instance.instance.metadata.instanceId === addonId);
 
     if (!addonInstance) {
-      throw createError(404, `No instance of the addon with id ${addonId} from the ${moduleName} module was found`);
+      throw new HttpError(404, `No instance of the addon with id ${addonId} from the ${moduleName} module was found`);
     }
 
     return addonInstance.instance;
@@ -124,13 +122,13 @@ export default class AddonController {
     const variables = this.addonsManager.variables[addon.metadata.instanceId];
 
     if (!variables) {
-      throw createError(400, `The ${addon.metadata.name} instance ${addonId} does not have any variables`);
+      throw new HttpError(400, `The ${addon.metadata.name} instance ${addonId} does not have any variables`);
     }
 
     const foundVariable = variables.find(variable => variable.uniqueId === variableId);
 
     if (!foundVariable) {
-      throw createError(404, `The ${addon.metadata.name} instance ${addonId} does not have a variable with the id ${variableId}`);
+      throw new HttpError(404, `The ${addon.metadata.name} instance ${addonId} does not have a variable with the id ${variableId}`);
     }
 
     return foundVariable;

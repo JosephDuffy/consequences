@@ -116,7 +116,7 @@ declare module "consequences/addons" {
          *
          * @param newValue The new value of the variable
          */
-        updateValue?(newValue: any): void;
+        updateValue?(newValue: any): Promise<void>;
     }
     export interface Addon {
         /**

@@ -1,5 +1,5 @@
 import { Inject, Service } from 'typedi';
-import winston = require('winston');
+import * as winston from 'winston';
 
 import Addon from './Addon';
 import AddonInitialiser from './AddonInitialiser';
