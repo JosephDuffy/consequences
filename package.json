@@ -26,6 +26,7 @@
     "reflect-metadata": "^0.1.10",
     "routing-controllers": "^0.7.2",
     "typedi": "^0.5.2",
+    "uuid": "^3.1.0",
     "winston": "^2.3.1"
   },
   "devDependencies": {
@@ -36,6 +37,7 @@
     "@types/lokijs": "^1.2.30",
     "@types/mz": "^0.0.31",
     "@types/node": "^8.0.28",
+    "@types/uuid": "^3.4.2",
     "@types/winston": "^2.3.5",
     "dts-bundle-generator": "^0.2.0",
     "nodemon": "^1.12.0",

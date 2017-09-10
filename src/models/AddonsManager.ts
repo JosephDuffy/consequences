@@ -1,4 +1,5 @@
 import { Inject, Service } from 'typedi';
+import * as uuid from 'uuid/v1';
 import * as winston from 'winston';
 
 import Addon from './Addon';
@@ -84,13 +85,12 @@ export default class AddonsManager {
 
       try {
         const instance = await this.loadAddonFromDatabase(addonToLoadInfo, initialiser);
-        const instanceId = instance.instance.metadata.instanceId;
 
-        if (!this._instances[instanceId]) {
-          this._instances[instanceId] = [];
+        if (!this._instances[moduleName]) {
+          this._instances[moduleName] = [];
         }
 
-        this._instances[instanceId].push(instance);
+        this._instances[moduleName].push(instance);
       } catch (error) {
         winston.error(error);
       }
@@ -109,7 +109,7 @@ export default class AddonsManager {
     }
 
     const metadata: Addon.Metadata = {
-      instanceId: moduleName, // TODO: Generate a unique id
+      instanceId: uuid(),
       name: initialiser.metadata.name, // TODO: Allow user to change this
     };
 

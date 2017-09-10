@@ -34,13 +34,13 @@ export default class AddonController {
     };
   }
 
-  @Get('/:moduleName/:addonId/variables/')
+  @Get('/:moduleName/:instanceId/variables/')
   @OnUndefined(204)
   public async getAddonVariables(
     @Param('moduleName') moduleName: string,
-    @Param('addonId') addonId: string,
+    @Param('instanceId') instanceId: string,
   ): Promise<VariableState[]> {
-    const instance = this.retrieveAddon(moduleName, addonId);
+    const instance = this.retrieveAddon(moduleName, instanceId);
 
     const variables = this.addonsManager.variables[instance.metadata.instanceId];
 
@@ -62,13 +62,13 @@ export default class AddonController {
     return variableStates;
   }
 
-  @Get('/:moduleName/:addonId/variables/:variableId')
+  @Get('/:moduleName/:instanceId/variables/:variableId')
   public async getAddonVariableState(
     @Param('moduleName') moduleName: string,
-    @Param('addonId') addonId: string,
+    @Param('instanceId') instanceId: string,
     @Param('variableId') variableId: string,
   ): Promise<VariableState> {
-    const variable = this.retrieveVariable(moduleName, addonId, variableId);
+    const variable = this.retrieveVariable(moduleName, instanceId, variableId);
 
     return {
       id: variable.uniqueId,
@@ -78,15 +78,15 @@ export default class AddonController {
     };
   }
 
-  @Put('/:moduleName/:addonId/variables/:variableId/value')
+  @Put('/:moduleName/:instanceId/variables/:variableId/value')
   @OnUndefined(204)
   public async updateAddonVariableValue(
     @Param('moduleName') moduleName: string,
-    @Param('addonId') addonId: string,
+    @Param('instanceId') instanceId: string,
     @Param('variableId') variableId: string,
     @Body() body: {newValue: any},
   ) {
-    const variable = this.retrieveVariable(moduleName, addonId, variableId);
+    const variable = this.retrieveVariable(moduleName, instanceId, variableId);
 
     if (!variable.updateValue) {
       throw new HttpError(400, 'Variable does not support being updated');
@@ -100,35 +100,35 @@ export default class AddonController {
     }
   }
 
-  private retrieveAddon(moduleName: string, addonId: string): Addon {
+  private retrieveAddon(moduleName: string, instanceId: string): Addon {
     const addonInstances = this.addonsManager.instances[moduleName];
 
     if (!addonInstances) {
       throw new HttpError(404, `An addon with the module name ${moduleName} was not found`);
     }
 
-    const addonInstance = addonInstances.find(instance => instance.instance.metadata.instanceId === addonId);
+    const addonInstance = addonInstances.find(instance => instance.instance.metadata.instanceId === instanceId);
 
     if (!addonInstance) {
-      throw new HttpError(404, `No instance of the addon with id ${addonId} from the ${moduleName} module was found`);
+      throw new HttpError(404, `No instance of the addon with id ${instanceId} from the ${moduleName} module was found`);
     }
 
     return addonInstance.instance;
   }
 
-  private retrieveVariable(moduleName: string, addonId: string, variableId: string): Variable {
-    const addon = this.retrieveAddon(moduleName, addonId);
+  private retrieveVariable(moduleName: string, instanceId: string, variableId: string): Variable {
+    const addon = this.retrieveAddon(moduleName, instanceId);
 
     const variables = this.addonsManager.variables[addon.metadata.instanceId];
 
     if (!variables) {
-      throw new HttpError(400, `The ${addon.metadata.name} instance ${addonId} does not have any variables`);
+      throw new HttpError(400, `The ${addon.metadata.name} instance ${instanceId} does not have any variables`);
     }
 
     const foundVariable = variables.find(variable => variable.uniqueId === variableId);
 
     if (!foundVariable) {
-      throw new HttpError(404, `The ${addon.metadata.name} instance ${addonId} does not have a variable with the id ${variableId}`);
+      throw new HttpError(404, `The ${addon.metadata.name} instance ${instanceId} does not have a variable with the id ${variableId}`);
     }
 
     return foundVariable;
