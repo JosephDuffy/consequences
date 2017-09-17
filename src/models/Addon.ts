@@ -1,4 +1,6 @@
 import Condition from './Condition';
+import Event from './Event';
+import EventConstructor from './EventConstructor';
 import Variable from './Variable';
 
 interface Addon {
@@ -12,46 +14,32 @@ interface Addon {
   readonly metadata: Addon.Metadata;
 
   /**
-   * An optional function that should load and return any variables the addon has. Once this
-   * method has been called the `onVariableAdded` and `onVariableRemoved` functions (if
-   * implemented) should start being called.
+   * An optional property that should return an array of promises that resolve to variables.
    *
-   * If this method is unimplemented it is assumed that the addon does not offer any variables.
+   * If this property is unimplemented it is assumed that the addon does not offer any variables.
+   */
+  readonly variables?: Promise<Variable[]>;
+
+  /**
+   * An optional property that should return an array of promises that resolve to conditions.
    *
-   * @returns {Promise<Variable[]>} A promise that will resolve to an array of variables
+   * If this property is unimplemented it is assumed that the addon does not offer any conditions.
    */
-  loadVariables?(): Promise<Variable[]>;
+  readonly conditions?: Promise<Condition[]>;
 
   /**
-   * A function that the addon must call when it has added a variable
-   */
-  onVariableAdded?(variable: Variable): void;
-
-  /**
-   * A function that the addon must call when it has removed a variable
-   */
-  onVariableRemoved?(variable: Variable): void;
-
-  /**
-   * An optional function that should load and return any conditions the addon has. Once this
-   * method has been called the `onConditionAdded` and `onConditionRemoved` functions (if
-   * implemented) should start being called.
+   * An optional property that should return an array of promises that resolve to events.
    *
-   * If this method is unimplemented it is assumed that the addon does not offer any conditions.
+   * If this property is unimplemented it is assumed that the addon does not offer any events.
+   */
+  readonly events?: Promise<Event[]>;
+
+  /**
+   * An optional property that should return an array of promises that resolve to event constructors.
    *
-   * @returns {Promise<Condition[]>} A promise that will resolve to an array of conditions
+   * If this property is unimplemented it is assumed that the addon does not offer any event constructors.
    */
-  loadConditions?(): Promise<Condition[]>;
-
-  /**
-   * A function that the addon must call when it has added a condition
-   */
-  onConditionAdded?(condition: Condition): void;
-
-  /**
-   * A function that the addon must call when it has removed a condition
-   */
-  onConditionRemoved?(condition: Condition): void;
+  readonly eventConstructors?: Promise<EventConstructor[]>;
 
 }
 

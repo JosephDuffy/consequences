@@ -5,7 +5,7 @@ import * as winston from 'winston';
 import Addon from '../models/Addon';
 import AddonsManager from '../models/AddonsManager';
 import AddonStatus from '../models/AddonStatus';
-import { AddonOptions } from '../models/Database';
+import UserInput from '../models/UserInput';
 import Variable from '../models/Variable';
 import VariableState from '../models/VariableState';
 
@@ -29,7 +29,7 @@ export default class AddonController {
       const moduleInstances = (instances[moduleName] || []).map((instance) => {
         return {
           metadata: instance.instance.metadata,
-          options: instance.options,
+          inputs: instance.inputs,
         };
       });
 
@@ -46,13 +46,13 @@ export default class AddonController {
   @Post('/:moduleName/')
   public async createAddonInstance(
     @Param('moduleName') moduleName: string,
-    @Body() options?: AddonOptions,
+    @Body() inputs?: UserInput.Value[],
   ): Promise<AddonStatus.Instance> {
-    const instance = await this.addonsManager.createNewAddonInstance(moduleName, options);
+    const instance = await this.addonsManager.createNewAddonInstance(moduleName, inputs);
 
     return {
       metadata: instance.instance.metadata,
-      options: instance.options,
+      inputs: instance.inputs,
     };
   }
 
@@ -64,11 +64,11 @@ export default class AddonController {
   ): Promise<VariableState[]> {
     const instance = this.retrieveAddon(moduleName, instanceId);
 
-    const variables = this.addonsManager.variables[instance.metadata.instanceId];
-
-    if (!variables) {
+    if (!instance.variables) {
       return;
     }
+
+    const variables = await instance.variables;
 
     const variableStates: VariableState[] = [];
 
@@ -90,7 +90,7 @@ export default class AddonController {
     @Param('instanceId') instanceId: string,
     @Param('variableId') variableId: string,
   ): Promise<VariableState> {
-    const variable = this.retrieveVariable(moduleName, instanceId, variableId);
+    const variable = await this.retrieveVariable(moduleName, instanceId, variableId);
 
     return {
       id: variable.uniqueId,
@@ -108,7 +108,7 @@ export default class AddonController {
     @Param('variableId') variableId: string,
     @Body() body: {newValue: any},
   ) {
-    const variable = this.retrieveVariable(moduleName, instanceId, variableId);
+    const variable = await this.retrieveVariable(moduleName, instanceId, variableId);
 
     if (!variable.updateValue) {
       throw new HttpError(400, 'Variable does not support being updated');
@@ -138,22 +138,26 @@ export default class AddonController {
     return addonInstance.instance;
   }
 
-  private retrieveVariable(moduleName: string, instanceId: string, variableId: string): Variable {
+  private async retrieveVariable(moduleName: string, instanceId: string, variableId: string): Promise<Variable> {
     const addon = this.retrieveAddon(moduleName, instanceId);
 
-    const variables = this.addonsManager.variables[addon.metadata.instanceId];
+    if (!addon.variables) {
+      throw new HttpError(400, `The ${addon.metadata.name} instance ${instanceId} does support variables`);
+    }
+
+    const variables = await addon.variables;
 
     if (!variables) {
       throw new HttpError(400, `The ${addon.metadata.name} instance ${instanceId} does not have any variables`);
     }
 
-    const foundVariable = variables.find(variable => variable.uniqueId === variableId);
+    const variable = variables.find(({ uniqueId }) => uniqueId === variableId);
 
-    if (!foundVariable) {
+    if (!variable) {
       throw new HttpError(404, `The ${addon.metadata.name} instance ${instanceId} does not have a variable with the id ${variableId}`);
     }
 
-    return foundVariable;
+    return variable;
   }
 
 }

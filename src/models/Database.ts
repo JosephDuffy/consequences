@@ -1,5 +1,7 @@
 import Loki = require('lokijs');
 
+import UserInput from './UserInput';
+
 export default class Database {
 
   /// The Loki instance backing the database
@@ -53,9 +55,5 @@ export type AddonSchema = {
   instanceId: string;
   moduleName: string;
   displayName: string;
-  options?: AddonOptions;
-};
-
-export type AddonOptions = {
-  [instanceId: string]: any;
+  inputs: UserInput.Value[];
 };

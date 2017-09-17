@@ -25,6 +25,12 @@ interface UserInput {
   readonly kind: UserInput.Kind;
 
   /**
+   * An optional array of options the user may input. If provided
+   * the user will _only_ be able to input one of these values.
+   */
+  readonly options?: any[];
+
+  /**
    * The default value to pre-populate the input field with
    */
   readonly defaultValue?: any;

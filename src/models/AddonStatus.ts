@@ -1,6 +1,6 @@
 import Addon from './Addon';
 import AddonInitialiser from './AddonInitialiser';
-import { AddonOptions } from './Database';
+import UserInput from './UserInput';
 
 interface AddonStatus {
   readonly moduleName: string;
@@ -13,7 +13,7 @@ interface AddonStatus {
 namespace AddonStatus {
   export interface Instance {
     metadata: Addon.Metadata;
-    options?: AddonOptions;
+    inputs?: UserInput.Value[];
   }
 }
 

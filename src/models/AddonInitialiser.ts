@@ -15,16 +15,16 @@ interface AddonInitialiser {
    *
    * This method must be implemented by addon authors.
    *
-   * The `configOptions` parameter will be an array of options that were provided
-   * by the `metadata.configOptions` property. If an option's `required` property
-   * is `true` it is guaranteed that that option will be in the array and will
+   * The `inputs` parameter will be an array of inputs that were provided
+   * by the `metadata.inputs` property. If an inputs's `required` property
+   * is `true` it is guaranteed that that inputs will be in the array and will
    * have passed type checking.
    *
    * @param {Addon.Metadata} metadata
-   * @param {{ [id: string]: any; }} [configOptions]
+   * @param {UserInput.Value[]} [inputs]
    * @returns {Promise<Addon>}
    */
-  createInstance(metadata: Addon.Metadata, configOptions?: { [id: string]: any; }): Promise<Addon>;
+  createInstance(metadata: Addon.Metadata, inputs?: UserInput.Value[]): Promise<Addon>;
 
 }
 
@@ -49,20 +49,22 @@ namespace AddonInitialiser {
     readonly supportsMultipleInstances: boolean;
 
     /**
-     * Configuration options that may be passed to the `createInstance` function.
+     * Configuration options that may be passed to the `createInstance` function. These
+     * inputs will be presented to the user prior to creation.
      */
-    readonly configOptions?: UserInput[];
+    readonly inputs?: UserInput[];
   }
 
   export function validate(arg: any): arg is AddonInitialiser {
     return typeof arg.metadata === 'object' &&
-          validateMetadata(arg.metadata) &&
-          typeof arg.createInstance === 'function';
+           validateMetadata(arg.metadata) &&
+           typeof arg.createInstance === 'function';
   }
 
   export function validateMetadata(arg: any): arg is AddonInitialiser.Metadata {
     return typeof arg.name === 'string' &&
-          typeof arg.description === 'string';
+           typeof arg.description === 'string' &&
+           typeof arg.supportsMultipleInstances === 'boolean';
   }
 
 }

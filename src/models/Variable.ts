@@ -16,9 +16,17 @@ interface Variable {
    */
   readonly name: string;
 
-  readonly conditions: Condition[];
+  /**
+   * An array of conditions that this variable offers. These conditions should
+   * be associated with this variable.
+   */
+  readonly conditions?: Condition[];
 
-  readonly events: Event[];
+  /**
+   * An array of events that this variable offers. These events should be associated
+   * with this variable.
+   */
+  readonly events?: Event[];
 
   /**
    * Asks the variable to return its latest value, optionally performing work

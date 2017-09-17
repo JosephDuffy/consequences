@@ -5,7 +5,8 @@ import * as winston from 'winston';
 import Addon from './Addon';
 import AddonInitialiser from './AddonInitialiser';
 import AddonsLoader from './AddonsLoader';
-import Database, { AddonOptions, AddonSchema } from './Database';
+import Database, { AddonSchema } from './Database';
+import UserInput from './UserInput';
 import Variable from './Variable';
 
 @Service()
@@ -18,8 +19,6 @@ export default class AddonsManager {
 
   private _instances: { [moduleName: string]: AddonInstance[] };
 
-  private _variables: { [addonId: string]: Variable[] };
-
   public get initialisers(): { [moduleName: string]: AddonInitialiser } {
     return this._initialisers;
   }
@@ -28,14 +27,9 @@ export default class AddonsManager {
     return this._instances;
   }
 
-  public get variables(): { [addonId: string]: Variable[] } {
-    return this._variables;
-  }
-
   constructor() {
     this._initialisers = {};
     this._instances = {};
-    this._variables = {};
   }
 
   public async loadAddons() {
@@ -77,7 +71,7 @@ export default class AddonsManager {
     }
   }
 
-  public async createNewAddonInstance(moduleName: string, options?: AddonOptions): Promise<AddonInstance> {
+  public async createNewAddonInstance(moduleName: string, inputs: UserInput.Value[] = []): Promise<AddonInstance> {
     const initialiser = this._initialisers[moduleName];
 
     if (!initialiser) {
@@ -93,16 +87,45 @@ export default class AddonsManager {
       name: initialiser.metadata.name, // TODO: Allow user to change this
     };
 
-    const instance = await this.createAddonInstance(metadata, options, initialiser, moduleName);
+    const instance = await this.createAddonInstance(metadata, inputs, initialiser, moduleName);
 
     this.database.createAddon({
       instanceId: metadata.instanceId,
       moduleName,
       displayName: metadata.name,
-      options,
+      inputs,
     });
 
     return instance;
+  }
+
+  public resolveAddon(resolution: AddonResolution): Addon {
+    const addonInstances = this.instances[resolution.name];
+
+    if (addonInstances === undefined) {
+      throw new Error(`Failed to find module with name ${resolution.name}`);
+    }
+
+    if (addonInstances.length === 0) {
+      throw new Error(`No instance of addon ${resolution.name} found}`);
+    }
+
+    if (resolution.instanceId) {
+      const foundInstance = addonInstances.find((instance) => instance.instance.metadata.instanceId === resolution.instanceId);
+
+      if (!foundInstance) {
+        throw new Error(`Found ${addonInstances.length} instances for addon ${resolution.name}, but none with instance id ${resolution.instanceId}`);
+      }
+
+      return foundInstance.instance;
+    } else {
+      if (addonInstances.length > 1) {
+        throw new Error(`Found ${addonInstances.length} instances for addon ${resolution.name}, but no instance id was provided`);
+      }
+
+      return addonInstances[0].instance;
+    }
+
   }
 
   private async loadAddonFromDatabase(data: AddonSchema, initialiser: AddonInitialiser): Promise<AddonInstance> {
@@ -113,37 +136,25 @@ export default class AddonsManager {
       name: data.displayName,
     };
 
-    return this.createAddonInstance(metadata, data.options, initialiser, data.moduleName);
+    return this.createAddonInstance(metadata, data.inputs, initialiser, data.moduleName);
   }
 
-  private async createAddonInstance(metadata: Addon.Metadata, options: AddonOptions, initialiser: AddonInitialiser, moduleName: string): Promise<AddonInstance> {
-    const requiredOptions = (initialiser.metadata.configOptions || []).filter(configOption => configOption.required);
+  private async createAddonInstance(metadata: Addon.Metadata, inputs: UserInput.Value[], initialiser: AddonInitialiser, moduleName: string): Promise<AddonInstance> {
+    const requiredInputs = (initialiser.metadata.inputs || []).filter(input => input.required);
 
-    const missingKeys = requiredOptions.filter((requiredOption) => {
-      return options && !options.hasKey(requiredOption.uniqueId);
+    const missingInputs = requiredInputs.filter((requiredInput) => {
+      return inputs.findIndex((input) => input.uniqueId === requiredInput.uniqueId) === -1;
     });
 
-    if (missingKeys.length > 0) {
-      const missingKeysString = missingKeys.join(', ');
-      throw new Error(`Attempted to load ${initialiser.metadata.name} from ${moduleName} but required options are missing: ${missingKeysString}`);
+    if (missingInputs.length > 0) {
+      const missingKeysString = missingInputs.map((input) => input.name).join(', ');
+      throw new Error(`Attempted to load ${initialiser.metadata.name} from ${moduleName} but required inputs are missing: ${missingKeysString}`);
     }
 
-    const addonInstance = await initialiser.createInstance(metadata, options);
+    const addonInstance = await initialiser.createInstance(metadata, inputs);
     const addonId = metadata.instanceId;
 
     winston.info(`Created addon instance ${initialiser.metadata.name} from ${moduleName} with id ${addonId}`);
-
-    if (addonInstance.loadVariables) {
-      if (addonInstance.onVariableAdded) {
-        addonInstance.onVariableAdded = this.createVariableAddedFunction(addonInstance);
-      }
-
-      if (addonInstance.onVariableRemoved) {
-        addonInstance.onVariableRemoved = this.createVariableRemovedFunction(addonInstance);
-      }
-
-      this._variables[addonId] = await addonInstance.loadVariables();
-    }
 
     if (this._instances[metadata.instanceId] === undefined) {
       this._instances[metadata.instanceId] = [];
@@ -151,42 +162,25 @@ export default class AddonsManager {
 
     const storedInstance = {
       instance: addonInstance,
-      options,
+      inputs,
     };
 
     this._instances[addonInstance.metadata.instanceId].push(storedInstance);
 
     return storedInstance;
   }
-
-  private createVariableAddedFunction(addon: Addon): (variable: Variable) => void {
-    const addonId = addon.metadata.instanceId;
-
-    return (variable: Variable) => {
-      if (!this._variables.hasOwnProperty(addonId)) {
-        this._variables[addonId] = [];
-      }
-
-      this._variables[addonId].push(variable);
-    };
-  }
-
-  private createVariableRemovedFunction(addon: Addon): (variable: Variable) => void {
-    const addonId = addon.metadata.instanceId;
-
-    return (removedVariable: Variable) => {
-      if (!this._variables.hasOwnProperty(addonId)) {
-        return;
-      }
-
-      this._variables[addonId] = this._variables[addonId].filter(variable => variable.uniqueId !== removedVariable.uniqueId);
-    };
-  }
 }
 
-interface AddonInstance {
+type AddonInstance = {
 
   readonly instance: Addon;
 
-  readonly options?: AddonOptions;
-}
+  readonly inputs?: UserInput.Value[];
+};
+
+export type AddonResolution = {
+
+  readonly name: string;
+
+  readonly instanceId?: string;
+};
