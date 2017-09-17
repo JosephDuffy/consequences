@@ -1,5 +1,5 @@
 import Addon from './Addon';
-import UserInputType from './UserInputType';
+import UserInput from './UserInput';
 
 interface AddonInitialiser {
 
@@ -51,16 +51,7 @@ namespace AddonInitialiser {
     /**
      * Configuration options that may be passed to the `createInstance` function.
      */
-    readonly configOptions?: AddonInitialiser.ConfigOption[];
-  }
-
-  export interface ConfigOption {
-    id: string;
-    required: boolean;
-    name: string;
-    type: UserInputType;
-    hint?: string;
-    defaultValue?: any;
+    readonly configOptions?: UserInput[];
   }
 
   export function validate(arg: any): arg is AddonInitialiser {

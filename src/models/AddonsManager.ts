@@ -5,7 +5,6 @@ import * as winston from 'winston';
 import Addon from './Addon';
 import AddonInitialiser from './AddonInitialiser';
 import AddonsLoader from './AddonsLoader';
-import AddonStatus from './AddonStatus';
 import Database, { AddonOptions, AddonSchema } from './Database';
 import Variable from './Variable';
 
@@ -15,33 +14,14 @@ export default class AddonsManager {
   @Inject()
   private database: Database;
 
-  private initialisers: { [moduleName: string]: AddonInitialiser };
+  private _initialisers: { [moduleName: string]: AddonInitialiser };
 
   private _instances: { [moduleName: string]: AddonInstance[] };
 
   private _variables: { [addonId: string]: Variable[] };
 
-  public get addonStatus(): AddonStatus[] {
-    const status: AddonStatus[] = [];
-
-    for (const moduleName of Object.keys(this.initialisers)) {
-      const initialiser = this.initialisers[moduleName];
-
-      const instances = (this._instances[moduleName] || []).map((instance) => {
-        return {
-          metadata: instance.instance.metadata,
-          options: instance.options,
-        };
-      });
-
-      status.push({
-        moduleName,
-        metadata: initialiser.metadata,
-        instances,
-      });
-    }
-
-    return status;
+  public get initialisers(): { [moduleName: string]: AddonInitialiser } {
+    return this._initialisers;
   }
 
   public get instances(): { [moduleName: string]: AddonInstance[] } {
@@ -53,7 +33,7 @@ export default class AddonsManager {
   }
 
   constructor() {
-    this.initialisers = {};
+    this._initialisers = {};
     this._instances = {};
     this._variables = {};
   }
@@ -63,11 +43,11 @@ export default class AddonsManager {
 
     const [ addonModules, errors ] = await AddonsLoader.loadAddons();
 
-    errors.forEach((error) => winston.error(error.message));
+    errors.forEach(({addonName, error}) => winston.error(`Error loading ${addonName} module.`, error));
 
     for (const addonModule of addonModules) {
       const { moduleName, initialiser } = addonModule;
-      this.initialisers[addonModule.moduleName] = initialiser;
+      this._initialisers[addonModule.moduleName] = initialiser;
 
       winston.info(`Loaded addon initialiser for ${initialiser.metadata.name} from ${moduleName}`);
     }
@@ -76,7 +56,7 @@ export default class AddonsManager {
 
     for (const addonToLoadInfo of addonsToLoad) {
       const { moduleName } = addonToLoadInfo;
-      const initialiser = this.initialisers[moduleName];
+      const initialiser = this._initialisers[moduleName];
 
       if (!initialiser) {
         winston.warn(`${moduleName} addon is stored in the database but could not be found. Has it been uninstalled?`);
@@ -98,7 +78,7 @@ export default class AddonsManager {
   }
 
   public async createNewAddonInstance(moduleName: string, options?: AddonOptions): Promise<AddonInstance> {
-    const initialiser = this.initialisers[moduleName];
+    const initialiser = this._initialisers[moduleName];
 
     if (!initialiser) {
       throw new Error(`No module with the name ${moduleName} was found`);
@@ -140,7 +120,7 @@ export default class AddonsManager {
     const requiredOptions = (initialiser.metadata.configOptions || []).filter(configOption => configOption.required);
 
     const missingKeys = requiredOptions.filter((requiredOption) => {
-      return options && !options.hasKey(requiredOption.id);
+      return options && !options.hasKey(requiredOption.uniqueId);
     });
 
     if (missingKeys.length > 0) {

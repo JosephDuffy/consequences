@@ -1,16 +1,31 @@
+import Condition from './Condition';
+import Event from './Event';
 
 /**
  * An object that represents a value in the system that can be changed
  */
 interface Variable {
 
-  /** A unique (to the addon) identifier. This value MUST be consistent across requests and system restarts */
+  /**
+   * An id that must be unique to this addon and remain constant across requests and system restarts
+   */
   readonly uniqueId: string;
 
-  /** The name of the variable */
+  /**
+   * A user-friendly name for the variable
+   */
   readonly name: string;
 
-  /** The current value of the variable */
+  readonly conditions: Condition[];
+
+  readonly events: Event[];
+
+  /**
+   * Asks the variable to return its latest value, optionally performing work
+   * asynchronously to retrieve the value
+   *
+   * @returns {Promise<any>} A promise that resolves to the current value
+   */
   retrieveValue(): Promise<any>;
 
   /**
@@ -27,6 +42,7 @@ interface Variable {
   /**
    * Removed the provided listener from the list of functions that will be called
    * when the values updates
+   *
    * @param listener The listener function to be removed from the listeners list
    */
   removeChangeEventListener(listener: () => void): void;

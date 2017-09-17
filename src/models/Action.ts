@@ -1,10 +1,10 @@
-import { UserInput } from './Condition';
+import UserInput from './UserInput';
 
 interface Action {
 
   readonly uniqueId: string;
 
-  perform(userInputs: UserInput[]): void;
+  perform(userInputs: UserInput.Value[]): Promise<void>;
 
 }
 

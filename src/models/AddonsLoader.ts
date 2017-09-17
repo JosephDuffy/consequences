@@ -26,9 +26,9 @@ export default class AddonsLoader {
     return process.env.CONSEQUENCES_MODULES_PATH || exec('npm root -g');
   }
 
-  public static async loadAddons(): Promise<[AddonModule[], Error[]]> {
+  public static async loadAddons(): Promise<[AddonModule[], Array<{addonName: string, error: Error}>]> {
     const addons: AddonModule[] = [];
-    const errors: Error[] = [];
+    const errors: Array<{addonName: string, error: Error}> = [];
 
     const globalModulesPath = await this.globalModulesPath();
 
@@ -46,7 +46,7 @@ export default class AddonsLoader {
         const addon = await this.loadAddon(addonName, globalModulesPath);
         addons.push(addon);
       } catch (error) {
-        errors.push(error);
+        errors.push({addonName, error});
       }
     }
 

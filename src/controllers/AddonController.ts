@@ -17,8 +17,30 @@ export default class AddonController {
   private addonsManager: AddonsManager;
 
   @Get('/')
-  public async getAddonsStatus(): Promise<AddonStatus[]> {
-    return this.addonsManager.addonStatus;
+  public async getAddonsStatuses(): Promise<AddonStatus[]> {
+    const initialisers = this.addonsManager.initialisers;
+    const instances = this.addonsManager.instances;
+
+    const statuses: AddonStatus[] = [];
+
+    for (const moduleName of Object.keys(initialisers)) {
+      const initialiser = initialisers[moduleName];
+
+      const moduleInstances = (instances[moduleName] || []).map((instance) => {
+        return {
+          metadata: instance.instance.metadata,
+          options: instance.options,
+        };
+      });
+
+      statuses.push({
+        moduleName,
+        metadata: initialiser.metadata,
+        instances: moduleInstances,
+      });
+    }
+
+    return statuses;
   }
 
   @Post('/:moduleName/')

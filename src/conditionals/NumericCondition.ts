@@ -1,43 +1,37 @@
-import { Condition, ConditionInput, UserInput } from '../models/Condition';
-import UserInputType from '../models/UserInputType';
+import Condition from '../models/Condition';
+import UserInput from '../models/UserInput';
 
-// tslint:disable:max-classes-per-file
 namespace NumericCondition {
-
-  export class Input implements ConditionInput {
-
-    public readonly uniqueId = 'rhs_input';
-
-    public readonly optional = false;
-
-    public readonly allowsMultiple = false;
-
-    public readonly type = UserInputType.number;
-
-  }
 
   abstract class Base {
 
-    public readonly userInputs = [
-      new Input(),
+    public readonly inputs = [
+      {
+        uniqueId: 'lhs_input',
+        required: true,
+        allowsMultiple: false,
+        kind: UserInput.Kind.number,
+      },
+      {
+        uniqueId: 'rhs_input',
+        required: true,
+        allowsMultiple: false,
+        kind: UserInput.Kind.number,
+      },
     ];
 
-    public supports(input: any): boolean {
-      return Number.isFinite(input);
-    }
+    public async evaluate(inputs: UserInput.Value[]): Promise<boolean> {
+      const lhsInput = inputs.find(({ uniqueId }) => uniqueId === 'lhs_input');
+      const rhsInput = inputs.find(({ uniqueId }) => uniqueId === 'rhs_input');
 
-    public evaluate(input: any, userInputs?: UserInput[]): boolean {
-      const idToFind = new Input().uniqueId;
-      const userInput = userInputs.find(({ uniqueId }) => uniqueId === idToFind);
-
-      if (userInput === undefined) {
+      if (lhsInput === undefined || rhsInput === undefined) {
         return false;
       }
 
-      return this.checkValues(input, userInput.value);
+      return this.checkValues(lhsInput.value, rhsInput.value);
     }
 
-    protected checkValues(lhs: any, rhs: any): boolean {
+    protected checkValues(lhs: number, rhs: number): boolean {
       throw new Error('`checkValues` method must be overridden by subclasses');
     }
 
@@ -49,7 +43,7 @@ namespace NumericCondition {
 
     public readonly name = 'is equal to';
 
-    protected checkValues(lhs: any, rhs: any): boolean {
+    protected checkValues(lhs: number, rhs: number): boolean {
       return lhs === rhs;
     }
 
@@ -61,7 +55,7 @@ namespace NumericCondition {
 
     public readonly name = 'is not equal to';
 
-    protected checkValues(lhs: any, rhs: any): boolean {
+    protected checkValues(lhs: number, rhs: number): boolean {
       return lhs !== rhs;
     }
 
@@ -73,7 +67,7 @@ namespace NumericCondition {
 
     public readonly name = 'is less than';
 
-    protected checkValues(lhs: any, rhs: any): boolean {
+    protected checkValues(lhs: number, rhs: number): boolean {
       return lhs < rhs;
     }
 
@@ -85,7 +79,7 @@ namespace NumericCondition {
 
     public readonly name = 'is greater than';
 
-    protected checkValues(lhs: any, rhs: any): boolean {
+    protected checkValues(lhs: number, rhs: number): boolean {
       return lhs > rhs;
     }
 
@@ -97,7 +91,7 @@ namespace NumericCondition {
 
     public readonly name = 'is less than or equal to';
 
-    protected checkValues(lhs: any, rhs: any): boolean {
+    protected checkValues(lhs: number, rhs: number): boolean {
       return lhs <= rhs;
     }
 
@@ -109,7 +103,7 @@ namespace NumericCondition {
 
     public readonly name = 'is greater than or equal to';
 
-    protected checkValues(lhs: any, rhs: any): boolean {
+    protected checkValues(lhs: number, rhs: number): boolean {
       return lhs >= rhs;
     }
 

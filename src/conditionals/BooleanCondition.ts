@@ -1,6 +1,6 @@
 import Condition from '../models/Condition';
+import UserInput from '../models/UserInput';
 
-// tslint:disable:max-classes-per-file
 namespace BooleanCondition {
 
   export class True implements Condition {
@@ -9,12 +9,23 @@ namespace BooleanCondition {
 
     public readonly name = 'is true';
 
-    public supports(input: any): boolean {
-      return input === true || input === false;
-    }
+    public readonly inputs = [
+      {
+        uniqueId: 'input',
+        required: true,
+        allowsMultiple: false,
+        kind: UserInput.Kind.boolean,
+      },
+    ];
 
-    public evaluate(input: any): boolean {
-      return input === true;
+    public async evaluate(inputs: UserInput.Value[]): Promise<boolean> {
+      for (const input of inputs) {
+        if (input.uniqueId === 'input') {
+          return input.value === true;
+        }
+      }
+
+      return false;
     }
 
   }
@@ -25,12 +36,23 @@ namespace BooleanCondition {
 
     public readonly name = 'is false';
 
-    public supports(input: any): boolean {
-      return input === true || input === false;
-    }
+    public readonly inputs = [
+      {
+        uniqueId: 'input',
+        required: true,
+        allowsMultiple: false,
+        kind: UserInput.Kind.boolean,
+      },
+    ];
 
-    public evaluate(input: any): boolean {
-      return input === false;
+    public async evaluate(inputs: UserInput.Value[]): Promise<boolean> {
+      for (const input of inputs) {
+        if (input.uniqueId === 'input') {
+          return input.value === false;
+        }
+      }
+
+      return false;
     }
 
   }
