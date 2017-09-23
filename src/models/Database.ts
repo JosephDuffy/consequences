@@ -39,6 +39,10 @@ export default class Database {
     this.addons.insert(addon);
   }
 
+  public saveAddonData(instanceId: string, savedData: object) {
+    this.addons.findAndUpdate((addon) => addon.instanceId === instanceId, (addon) => { addon.savedData = savedData; return addon; });
+  }
+
   private loadOrCreateCollection<StoredType>(collectionName: string, options?: LokiCollectionOptions): LokiCollection<StoredType> {
     const loadedCollection = this.loki.getCollection<StoredType>(collectionName);
 
@@ -55,5 +59,6 @@ export type AddonSchema = {
   instanceId: string;
   moduleName: string;
   displayName: string;
-  inputs: UserInput.Value[];
+  userProvidedInputs: UserInput.Value[];
+  savedData?: object;
 };

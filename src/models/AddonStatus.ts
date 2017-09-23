@@ -13,7 +13,6 @@ interface AddonStatus {
 namespace AddonStatus {
   export interface Instance {
     metadata: Addon.Metadata;
-    inputs?: UserInput.Value[];
   }
 }
 

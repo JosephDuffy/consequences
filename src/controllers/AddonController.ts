@@ -28,8 +28,7 @@ export default class AddonController {
 
       const moduleInstances = (instances[moduleName] || []).map((instance) => {
         return {
-          metadata: instance.instance.metadata,
-          inputs: instance.inputs,
+          metadata: instance.metadata,
         };
       });
 
@@ -51,8 +50,7 @@ export default class AddonController {
     const instance = await this.addonsManager.createNewAddonInstance(moduleName, inputs);
 
     return {
-      metadata: instance.instance.metadata,
-      inputs: instance.inputs,
+      metadata: instance.metadata,
     };
   }
 
@@ -129,13 +127,13 @@ export default class AddonController {
       throw new HttpError(404, `An addon with the module name ${moduleName} was not found`);
     }
 
-    const addonInstance = addonInstances.find(instance => instance.instance.metadata.instanceId === instanceId);
+    const addonInstance = addonInstances.find(instance => instance.metadata.instanceId === instanceId);
 
     if (!addonInstance) {
       throw new HttpError(404, `No instance of the addon with id ${instanceId} from the ${moduleName} module was found`);
     }
 
-    return addonInstance.instance;
+    return addonInstance;
   }
 
   private async retrieveVariable(moduleName: string, instanceId: string, variableId: string): Promise<Variable> {

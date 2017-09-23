@@ -15,16 +15,20 @@ interface AddonInitialiser {
    *
    * This method must be implemented by addon authors.
    *
-   * The `inputs` parameter will be an array of inputs that were provided
-   * by the `metadata.inputs` property. If an inputs's `required` property
-   * is `true` it is guaranteed that that inputs will be in the array and will
-   * have passed type checking.
+   * The `inputs` property of the `metadata` parameter will be an array of inputs that
+   * were provided by the `metadata.inputs` property of this `AddonInitialiser`. If an input's
+   * `required` property is `true` it is guaranteed that that inputs will be in the array and
+   * will have passed type checking.
    *
-   * @param {Addon.Metadata} metadata
-   * @param {UserInput.Value[]} [inputs]
+   * @param {Addon.Metadata} metadata Metadata about the addon, including user inputs. To be stored
+   *                                  by the `Addon` instance
+   * @param {(data: object) => void} saveData A function that can be called to save the provided object
+   *                                          in a database. See the `savedData` parameter
+   * @param {object} savedData The most recent object that was passed to the `saveData` object. This object
+   *                           will be `undefined` if `saveData` has never been called.
    * @returns {Promise<Addon>}
    */
-  createInstance(metadata: Addon.Metadata, inputs?: UserInput.Value[]): Promise<Addon>;
+  createInstance(metadata: Addon.Metadata, saveData: (data: object) => void, savedData?: object): Promise<Addon>;
 
 }
 

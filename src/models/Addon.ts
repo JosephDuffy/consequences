@@ -1,6 +1,7 @@
 import Condition from './Condition';
 import Event from './Event';
 import EventConstructor from './EventConstructor';
+import UserInput from './UserInput';
 import Variable from './Variable';
 
 interface Addon {
@@ -55,6 +56,11 @@ namespace Addon {
      * `AddonInitialiser`, but may be changed by the user.
      */
     readonly name: string;
+
+    /**
+     * An array of inputs the user provided
+     */
+    readonly userProvidedInputs: UserInput.Value[];
   }
 }
 

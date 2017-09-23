@@ -17,13 +17,13 @@ export default class AddonsManager {
 
   private _initialisers: { [moduleName: string]: AddonInitialiser };
 
-  private _instances: { [moduleName: string]: AddonInstance[] };
+  private _instances: { [moduleName: string]: Addon[] };
 
   public get initialisers(): { [moduleName: string]: AddonInitialiser } {
     return this._initialisers;
   }
 
-  public get instances(): { [moduleName: string]: AddonInstance[] } {
+  public get instances(): { [moduleName: string]: Addon[] } {
     return this._instances;
   }
 
@@ -71,7 +71,7 @@ export default class AddonsManager {
     }
   }
 
-  public async createNewAddonInstance(moduleName: string, inputs: UserInput.Value[] = []): Promise<AddonInstance> {
+  public async createNewAddonInstance(moduleName: string, inputs: UserInput.Value[] = []): Promise<Addon> {
     const initialiser = this._initialisers[moduleName];
 
     if (!initialiser) {
@@ -85,15 +85,16 @@ export default class AddonsManager {
     const metadata: Addon.Metadata = {
       instanceId: uuid(),
       name: initialiser.metadata.name, // TODO: Allow user to change this
+      userProvidedInputs: inputs,
     };
 
-    const instance = await this.createAddonInstance(metadata, inputs, initialiser, moduleName);
+    const instance = await this.createAddonInstance(metadata, initialiser, moduleName);
 
     this.database.createAddon({
       instanceId: metadata.instanceId,
       moduleName,
       displayName: metadata.name,
-      inputs,
+      userProvidedInputs: inputs,
     });
 
     return instance;
@@ -111,39 +112,40 @@ export default class AddonsManager {
     }
 
     if (resolution.instanceId) {
-      const foundInstance = addonInstances.find((instance) => instance.instance.metadata.instanceId === resolution.instanceId);
+      const foundInstance = addonInstances.find((instance) => instance.metadata.instanceId === resolution.instanceId);
 
       if (!foundInstance) {
         throw new Error(`Found ${addonInstances.length} instances for addon ${resolution.name}, but none with instance id ${resolution.instanceId}`);
       }
 
-      return foundInstance.instance;
+      return foundInstance;
     } else {
       if (addonInstances.length > 1) {
         throw new Error(`Found ${addonInstances.length} instances for addon ${resolution.name}, but no instance id was provided`);
       }
 
-      return addonInstances[0].instance;
+      return addonInstances[0];
     }
 
   }
 
-  private async loadAddonFromDatabase(data: AddonSchema, initialiser: AddonInitialiser): Promise<AddonInstance> {
+  private async loadAddonFromDatabase(data: AddonSchema, initialiser: AddonInitialiser): Promise<Addon> {
     winston.info(`Attempting to load stored instance of ${data.displayName} from ${data.moduleName}`);
 
     const metadata: Addon.Metadata = {
       instanceId: data.instanceId,
       name: data.displayName,
+      userProvidedInputs: data.userProvidedInputs,
     };
 
-    return this.createAddonInstance(metadata, data.inputs, initialiser, data.moduleName);
+    return this.createAddonInstance(metadata, initialiser, data.moduleName, data.savedData);
   }
 
-  private async createAddonInstance(metadata: Addon.Metadata, inputs: UserInput.Value[], initialiser: AddonInitialiser, moduleName: string): Promise<AddonInstance> {
+  private async createAddonInstance(metadata: Addon.Metadata, initialiser: AddonInitialiser, moduleName: string, savedObject?: object): Promise<Addon> {
     const requiredInputs = (initialiser.metadata.inputs || []).filter(input => input.required);
 
     const missingInputs = requiredInputs.filter((requiredInput) => {
-      return inputs.findIndex((input) => input.uniqueId === requiredInput.uniqueId) === -1;
+      return metadata.userProvidedInputs.findIndex((input) => input.uniqueId === requiredInput.uniqueId) === -1;
     });
 
     if (missingInputs.length > 0) {
@@ -151,8 +153,10 @@ export default class AddonsManager {
       throw new Error(`Attempted to load ${initialiser.metadata.name} from ${moduleName} but required inputs are missing: ${missingKeysString}`);
     }
 
-    const addonInstance = await initialiser.createInstance(metadata, inputs);
     const addonId = metadata.instanceId;
+    const instance = await initialiser.createInstance(metadata, (dataToSave: object) => {
+      this.database.saveAddonData(addonId, dataToSave);
+    }, savedObject);
 
     winston.info(`Created addon instance ${initialiser.metadata.name} from ${moduleName} with id ${addonId}`);
 
@@ -160,23 +164,11 @@ export default class AddonsManager {
       this._instances[metadata.instanceId] = [];
     }
 
-    const storedInstance = {
-      instance: addonInstance,
-      inputs,
-    };
+    this._instances[instance.metadata.instanceId].push(instance);
 
-    this._instances[addonInstance.metadata.instanceId].push(storedInstance);
-
-    return storedInstance;
+    return instance;
   }
 }
-
-type AddonInstance = {
-
-  readonly instance: Addon;
-
-  readonly inputs?: UserInput.Value[];
-};
 
 export type AddonResolution = {
 
