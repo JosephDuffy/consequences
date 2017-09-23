@@ -3,24 +3,21 @@
 import Action from '../../src/models/Action';
 import Addon from '../../src/models/Addon';
 import AddonInitialiser from '../../src/models/AddonInitialiser';
-import { Condition, ConditionInput, UserInput } from '../../src/models/Condition';
-import { ActionStep, ConditionStep, EventListener, Step } from '../../src/models/EventListener';
+import Condition from '../../src/models/Condition';
+import Event from '../../src/models/Event';
+import EventConstructor from '../../src/models/EventConstructor';
 import Package from '../../src/models/Package';
-import UserInputType from '../../src/models/UserInputType';
+import UserInput from '../../src/models/UserInput';
 import Variable from '../../src/models/Variable';
 
 export {
   Addon,
   Action,
   AddonInitialiser,
-  EventListener,
-  ActionStep,
-  ConditionStep,
-  Step,
   Condition,
-  ConditionInput,
-  UserInput,
+  Event,
+  EventConstructor,
   Package,
+  UserInput,
   Variable,
-  UserInputType,
 };
