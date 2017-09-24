@@ -7,7 +7,8 @@ import Event from './Event';
 interface Variable {
 
   /**
-   * An id that must be unique to this addon and remain constant across requests and system restarts
+   * An id that must be unique to this addon or `VariableCollection` and remain constant
+   * across requests and system restarts
    */
   readonly uniqueId: string;
 

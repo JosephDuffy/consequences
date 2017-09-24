@@ -3,6 +3,7 @@ import Event from './Event';
 import EventConstructor from './EventConstructor';
 import UserInput from './UserInput';
 import Variable from './Variable';
+import VariableCollection from './VariableCollection';
 
 interface Addon {
 
@@ -15,11 +16,12 @@ interface Addon {
   readonly metadata: Addon.Metadata;
 
   /**
-   * An optional property that should return an array of promises that resolve to variables.
+   * An optional property that should return an array of promises that each resolve to either
+   * a `Variable` or a `VariableCollection`.
    *
    * If this property is unimplemented it is assumed that the addon does not offer any variables.
    */
-  readonly variables?: Promise<Variable[]>;
+  readonly variables?: Promise<Array<Variable | VariableCollection>>;
 
   /**
    * An optional property that should return an array of promises that resolve to conditions.

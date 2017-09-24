@@ -9,6 +9,7 @@ import EventConstructor from '../../src/models/EventConstructor';
 import Package from '../../src/models/Package';
 import UserInput from '../../src/models/UserInput';
 import Variable from '../../src/models/Variable';
+import VariableCollection from '../../src/models/VariableCollection';
 
 export {
   Addon,
@@ -20,4 +21,5 @@ export {
   Package,
   UserInput,
   Variable,
+  VariableCollection,
 };

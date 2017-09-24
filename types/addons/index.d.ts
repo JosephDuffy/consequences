@@ -172,7 +172,8 @@ declare module "consequences/addons" {
     }
     export interface Variable {
         /**
-         * An id that must be unique to this addon and remain constant across requests and system restarts
+         * An id that must be unique to this addon or `VariableCollection` and remain constant
+         * across requests and system restarts
          */
         readonly uniqueId: string;
         /**
@@ -223,6 +224,40 @@ declare module "consequences/addons" {
          */
         updateValue?(newValue: any): Promise<void>;
     }
+    export interface VariableCollection {
+        /**
+         * An id that must be unique to this addon and remain constant across requests and system restarts
+         */
+        readonly uniqueId: string;
+        /**
+         * A user-friendly name for the variable
+         */
+        readonly name: string;
+        /**
+         * The variables to include in the collection
+         */
+        readonly variables: Variable[];
+        /**
+         * An array of conditions that this variable collection offers. These conditions should
+         * be associated with this collection of variables.
+         *
+         * N.B.
+         *
+         * Any conditions offered by variables in this collection will automatically be offered
+         * to the user; they do not need to be included in this array.
+         */
+        readonly conditions?: Condition[];
+        /**
+         * An array of events that this collection of variable offers. These events
+         * should be associated with this collection of variables.
+         *
+         * N.B.
+         *
+         * Any events offered by variables in this collection will automatically be offered
+         * to the user; they do not need to be included in this array.
+         */
+        readonly events?: Event[];
+    }
     export interface Addon {
         /**
          * An object containing the metadata of the addon, including the id and name
@@ -232,11 +267,12 @@ declare module "consequences/addons" {
          */
         readonly metadata: Addon.Metadata;
         /**
-         * An optional property that should return an array of promises that resolve to variables.
+         * An optional property that should return an array of promises that each resolve to either
+         * a `Variable` or a `VariableCollection`.
          *
          * If this property is unimplemented it is assumed that the addon does not offer any variables.
          */
-        readonly variables?: Promise<Variable[]>;
+        readonly variables?: Promise<Array<Variable | VariableCollection>>;
         /**
          * An optional property that should return an array of promises that resolve to conditions.
          *
