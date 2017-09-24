@@ -7,7 +7,6 @@ import AddonInitialiser from './AddonInitialiser';
 import AddonsLoader from './AddonsLoader';
 import Database, { AddonSchema } from './Database';
 import UserInput from './UserInput';
-import Variable from './Variable';
 
 @Service()
 export default class AddonsManager {

@@ -7,6 +7,7 @@ import AddonsManager from '../models/AddonsManager';
 import AddonStatus from '../models/AddonStatus';
 import UserInput from '../models/UserInput';
 import Variable from '../models/Variable';
+import VariableCollection from '../models/VariableCollection';
 import VariableState from '../models/VariableState';
 
 @JsonController('/addons')
@@ -70,13 +71,28 @@ export default class AddonController {
 
     const variableStates: VariableState[] = [];
 
-    for (const variable of variables) {
+    async function addVariable(variable: Variable, parent?: {uniqueId: string, name: string }) {
       variableStates.push({
         id: variable.uniqueId,
         name: variable.name,
         value: await variable.retrieveValue(),
         supportsManualUpdating: !!variable.updateValue,
+        parent,
       });
+    }
+
+    for (const varOrCollection of variables) {
+      if (VariableCollection.isVariableCollection(varOrCollection)) {
+        const parent = {
+          uniqueId: varOrCollection.uniqueId,
+          name: varOrCollection.name,
+        };
+        for (const variable of varOrCollection.variables) {
+          addVariable(variable, parent);
+        }
+      } else {
+        addVariable(varOrCollection);
+      }
     }
 
     return variableStates;
@@ -149,7 +165,19 @@ export default class AddonController {
       throw new HttpError(400, `The ${addon.metadata.name} instance ${instanceId} does not have any variables`);
     }
 
-    const variable = variables.find(({ uniqueId }) => uniqueId === variableId);
+    const variable = (() => {
+      for (const varOrCollection of variables) {
+        if (VariableCollection.isVariableCollection(varOrCollection)) {
+          for (const childVariable of varOrCollection.variables) {
+            if (childVariable.uniqueId === variableId) {
+              return childVariable;
+            }
+          }
+        } else if (varOrCollection.uniqueId === variableId) {
+          return varOrCollection;
+        }
+      }
+    })();
 
     if (!variable) {
       throw new HttpError(404, `The ${addon.metadata.name} instance ${instanceId} does not have a variable with the id ${variableId}`);

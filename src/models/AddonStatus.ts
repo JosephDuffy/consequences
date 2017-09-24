@@ -1,6 +1,5 @@
 import Addon from './Addon';
 import AddonInitialiser from './AddonInitialiser';
-import UserInput from './UserInput';
 
 interface AddonStatus {
   readonly moduleName: string;

@@ -46,4 +46,12 @@ interface VariableCollection {
 
 }
 
+namespace VariableCollection {
+  export function isVariableCollection(object: any): object is VariableCollection {
+    return Array.isArray(object.variables) &&
+           typeof object.uniqueId === 'string' &&
+           typeof object.name === 'string';
+  }
+}
+
 export default VariableCollection;

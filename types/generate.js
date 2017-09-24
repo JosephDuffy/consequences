@@ -17,8 +17,9 @@ function generateModule(moduleName) {
     const cleanedLines = [];
 
     for (const line of fileLines) {
-      if (line.includes('function validate')) {
-        // Exclude any "validate*" functions as these are for internal-use only
+      const typeGuardsRegex = /function .*\)\:[\w\s]+is[\w\s\.]+;/;
+      if (typeGuardsRegex.test(line)) {
+        // Exclude any type guard functions as these are for internal-use only
         continue;
       }
 
@@ -29,9 +30,31 @@ function generateModule(moduleName) {
       cleanedLines.push(`    ${cleanedUpLine}`);
     }
 
+    let removeNext = false;
+
+    const filteredLines = cleanedLines.filter((line, index) => {
+      if (removeNext) {
+        removeNext = false;
+        return false;
+      }
+
+      if (index + 1 >= cleanedLines.length) {
+        return true;
+      }
+
+      const nextLine = cleanedLines[index + 1];
+      if (line.endsWith('{') && nextLine.endsWith('}')) {
+        // Remove empty blocks
+        removeNext = true;
+        return false;
+      }
+
+      return true;
+    });
+
     const finalLines = [
       `declare module "consequences/${moduleName}" {`,
-      ...cleanedLines,
+      ...filteredLines,
       '}'
     ];
     const finalContents = finalLines.reduce((file, line) => `${file}${line}\n`, '');
