@@ -159,11 +159,11 @@ export default class AddonsManager {
 
     winston.info(`Created addon instance ${initialiser.metadata.name} from ${moduleName} with id ${addonId}`);
 
-    if (this._instances[metadata.instanceId] === undefined) {
-      this._instances[metadata.instanceId] = [];
+    if (this._instances[moduleName] === undefined) {
+      this._instances[moduleName] = [];
     }
 
-    this._instances[instance.metadata.instanceId].push(instance);
+    this._instances[moduleName].push(instance);
 
     return instance;
   }
