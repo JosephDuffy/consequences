@@ -46,9 +46,18 @@ export default class AddonController {
   @Post('/:moduleName/')
   public async createAddonInstance(
     @Param('moduleName') moduleName: string,
-    @Body() inputs?: UserInput.Value[],
+    @Body() inputs?: { [uniqueId: string]: any },
   ): Promise<AddonStatus.Instance> {
-    const instance = await this.addonsManager.createNewAddonInstance(moduleName, inputs);
+    const inputsArray: UserInput.Value[] = [];
+
+    for (const inputKey of Object.keys((inputs || {}))) {
+      inputsArray.push({
+        uniqueId: inputKey,
+        value: inputs[inputKey],
+      });
+    }
+
+    const instance = await this.addonsManager.createNewAddonInstance(moduleName, inputsArray);
 
     return {
       metadata: instance.metadata,
@@ -88,10 +97,10 @@ export default class AddonController {
           name: varOrCollection.name,
         };
         for (const variable of varOrCollection.variables) {
-          addVariable(variable, parent);
+          await addVariable(variable, parent);
         }
       } else {
-        addVariable(varOrCollection);
+        await addVariable(varOrCollection);
       }
     }
 
