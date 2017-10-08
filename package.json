@@ -3,16 +3,16 @@
   "description": "",
   "author": "Joseph Duffy",
   "version": "0.1.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "scripts": {
+    "prepublishOnly": "npm run build",
     "start": "nodemon",
     "build": "tsc",
     "build:watch": "tsc -w",
     "lint": "tslint 'src/**/*.ts' --exclude 'src/**/*.d.ts' --type-check --project ./tsconfig.json",
     "lint:fix": "npm run lint -- --fix",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "generate-types": "./types/generate.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "MIT",
   "repository": "git+https://github.com/JosephDuffy/consequences",
@@ -39,7 +39,6 @@
     "@types/node": "^8.0.28",
     "@types/uuid": "^3.4.2",
     "@types/winston": "^2.3.5",
-    "dts-bundle-generator": "^0.2.0",
     "nodemon": "^1.12.0",
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
