@@ -65,7 +65,7 @@ export default class AddonsManager {
 
         this._instances[moduleName].push(instance);
       } catch (error) {
-        winston.error(error);
+        winston.error(`Failed to load stored ${moduleName} instance ${addonToLoadInfo.instanceId}`, error);
       }
     }
   }
