@@ -14,7 +14,8 @@
     "lint:fix": "npm run lint -- --fix",
     "test": "mocha ./src/**/__tests__/*.ts --require ts-node/register --require source-map-support/register",
     "test:watch": "npm run test -- -w",
-    "test:coverage": "nyc npm run test"
+    "test:coverage": "nyc npm run test",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "license": "MIT",
   "repository": "git+https://github.com/JosephDuffy/consequences",
@@ -45,6 +46,7 @@
     "@types/uuid": "^3.4.2",
     "@types/winston": "^2.3.5",
     "chai": "^4.1.2",
+    "coveralls": "^3.0.0",
     "mocha": "^4.0.1",
     "nodemon": "^1.12.0",
     "nyc": "^11.4.1",
