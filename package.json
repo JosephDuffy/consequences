@@ -15,7 +15,7 @@
     "test": "mocha ./src/**/__tests__/*.ts --require ts-node/register --require source-map-support/register",
     "test:watch": "npm run test -- -w",
     "test:coverage": "nyc npm run test",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coveralls": "npm run test:coverage; nyc report --reporter=text-lcov | coveralls"
   },
   "license": "MIT",
   "repository": "git+https://github.com/JosephDuffy/consequences",

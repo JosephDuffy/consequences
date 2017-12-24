@@ -6,4 +6,4 @@ node_js:
 
 cache: yarn
 
-after_success: npm run coverage
+after_success: npm run coveralls
