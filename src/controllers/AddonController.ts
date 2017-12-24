@@ -2,13 +2,13 @@ import { Body, Get, HttpError, JsonController, OnUndefined, Param, Post, Put } f
 import { Inject, Service } from 'typedi';
 import * as winston from 'winston';
 
-import Addon from '../models/Addon';
+import Addon from '../interfaces/Addon';
 import AddonsManager from '../models/AddonsManager';
-import AddonStatus from '../models/AddonStatus';
-import UserInput from '../models/UserInput';
-import Variable from '../models/Variable';
-import VariableCollection from '../models/VariableCollection';
-import VariableState from '../models/VariableState';
+import AddonStatus from '../interfaces/AddonStatus';
+import UserInput from '../interfaces/UserInput';
+import Variable from '../interfaces/Variable';
+import VariableCollection from '../interfaces/VariableCollection';
+import VariableState from '../interfaces/VariableState';
 
 @JsonController('/addons')
 @Service()

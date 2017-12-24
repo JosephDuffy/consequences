@@ -9,10 +9,12 @@
     "prepublishOnly": "npm run build",
     "start": "nodemon",
     "build": "tsc",
-    "build:watch": "tsc -w",
+    "build:watch": "npm run build -- -w",
     "lint": "tslint 'src/**/*.ts' --exclude 'src/**/*.d.ts' --type-check --project ./tsconfig.json",
     "lint:fix": "npm run lint -- --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./src/**/__tests__/*.ts --require ts-node/register --require source-map-support/register",
+    "test:watch": "npm run test -- -w",
+    "test:coverage": "nyc npm run test"
   },
   "license": "MIT",
   "repository": "git+https://github.com/JosephDuffy/consequences",
@@ -30,19 +32,47 @@
     "winston": "^2.3.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.0.10",
     "@types/core-js": "^0.9.43",
     "@types/koa": "^2.0.39",
     "@types/koa-bodyparser": "^3.0.24",
     "@types/koa-router": "^7.0.23",
     "@types/lokijs": "^1.2.30",
+    "@types/mocha": "^2.2.44",
     "@types/mz": "^0.0.31",
     "@types/node": "^8.0.28",
+    "@types/sinon": "^4.1.2",
     "@types/uuid": "^3.4.2",
     "@types/winston": "^2.3.5",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
     "nodemon": "^1.12.0",
+    "nyc": "^11.4.1",
+    "sinon": "^4.1.3",
+    "source-map-support": "^0.5.0",
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "tslint-misc-rules": "^3.2.0",
     "typescript": "^2.5.2"
+  },
+  "nyc": {
+    "require": [
+      "ts-node/register"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "**/__tests__/*"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "all": true
   }
 }

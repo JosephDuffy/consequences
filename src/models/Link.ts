@@ -1,6 +1,6 @@
-import Action from './Action';
-import Condition from './Condition';
-import UserInput from './UserInput';
+import Action from '../interfaces/Action';
+import Condition from '../interfaces/Condition';
+import UserInput from '../interfaces/UserInput';
 
 /**
  * A step in a `Chain`
@@ -21,6 +21,12 @@ export default class Link {
    * @type {Action[]}
    */
   public readonly actions: Array<[Action, UserInput.Value[]]>;
+
+  constructor(id: string, conditions: Array<[Condition, UserInput.Value[], Link]>, actions: Array<[Action, UserInput.Value[]]>) {
+    this.id = id;
+    this.conditions = conditions;
+    this.actions = actions;
+  }
 
   public async evaluate() {
     for (const [action, userInputs] of this.actions) {

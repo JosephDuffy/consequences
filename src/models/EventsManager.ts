@@ -4,9 +4,9 @@ import winston = require('winston');
 
 import VariableValueChangedEvent from '../events/VariableValueChangedEvent';
 import AddonsManager, { AddonResolution } from './AddonsManager';
-import Event from './Event';
-import EventConstructor from './EventConstructor';
-import UserInput from './UserInput';
+import Event from '../interfaces/Event';
+import EventConstructor from '../interfaces/EventConstructor';
+import UserInput from '../interfaces/UserInput';
 
 @Service()
 export default class EventsManager {
@@ -125,13 +125,13 @@ export default class EventsManager {
 
 }
 
-type EventConstructorResolution = {
+export type EventConstructorResolution = {
   readonly addon: AddonResolution;
 
   constructorId: string;
 };
 
-type EventResolution = {
+export type EventResolution = {
   readonly addon: AddonResolution;
 
   variableId?: string;

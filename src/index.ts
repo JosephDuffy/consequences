@@ -1,15 +1,15 @@
 // Interfaces that are for public consumption
 
-import Action from './models/Action';
-import Addon from './models/Addon';
-import AddonInitialiser from './models/AddonInitialiser';
-import Condition from './models/Condition';
-import Event from './models/Event';
-import EventConstructor from './models/EventConstructor';
-import Package from './models/Package';
-import UserInput from './models/UserInput';
-import Variable from './models/Variable';
-import VariableCollection from './models/VariableCollection';
+import Action from './interfaces/Action';
+import Addon from './interfaces/Addon';
+import AddonInitialiser from './interfaces/AddonInitialiser';
+import Condition from './interfaces/Condition';
+import Event from './interfaces/Event';
+import EventConstructor from './interfaces/EventConstructor';
+import Package from './interfaces/Package';
+import UserInput from './interfaces/UserInput';
+import Variable from './interfaces/Variable';
+import VariableCollection from './interfaces/VariableCollection';
 
 export {
   Addon,

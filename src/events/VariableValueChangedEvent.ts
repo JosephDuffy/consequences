@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events';
 
-import Event from '../models/Event';
-import EventConstructor from '../models/EventConstructor';
-import UserInput from '../models/UserInput';
-import Variable from '../models/Variable';
+import Event from '../interfaces/Event';
+import EventConstructor from '../interfaces/EventConstructor';
+import UserInput from '../interfaces/UserInput';
+import Variable from '../interfaces/Variable';
 
 class VariableValueChangedEvent extends EventEmitter implements Event {
 

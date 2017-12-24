@@ -2,11 +2,11 @@ import { Inject, Service } from 'typedi';
 import * as uuid from 'uuid/v1';
 import * as winston from 'winston';
 
-import Addon from './Addon';
-import AddonInitialiser from './AddonInitialiser';
+import Addon from '../interfaces/Addon';
+import AddonInitialiser from '../interfaces/AddonInitialiser';
 import AddonsLoader from './AddonsLoader';
 import Database, { AddonSchema } from './Database';
-import UserInput from './UserInput';
+import UserInput from '../interfaces/UserInput';
 
 @Service()
 export default class AddonsManager {

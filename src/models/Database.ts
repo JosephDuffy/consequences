@@ -1,7 +1,7 @@
 import Loki = require('lokijs');
 import { Service } from 'typedi';
 
-import UserInput from './UserInput';
+import UserInput from '../interfaces/UserInput';
 
 @Service()
 export default class Database {

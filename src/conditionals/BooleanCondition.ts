@@ -1,5 +1,5 @@
-import Condition from '../models/Condition';
-import UserInput from '../models/UserInput';
+import Condition from '../interfaces/Condition';
+import UserInput from '../interfaces/UserInput';
 
 namespace BooleanCondition {
 

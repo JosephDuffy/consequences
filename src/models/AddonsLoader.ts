@@ -3,8 +3,8 @@ import * as path from 'path';
 import winston = require('winston');
 import exec from '../helpers/exec';
 
-import AddonInitialiser from './AddonInitialiser';
-import { validatePackage } from './Package';
+import AddonInitialiser from '../interfaces/AddonInitialiser';
+import { validatePackage } from '../interfaces/Package';
 
 export type AddonModule = {
   /**
