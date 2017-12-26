@@ -1,5 +1,7 @@
 # Consequences
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/JosephDuffy/consequences.svg)](https://greenkeeper.io/)
+
 Consequences provides the scaffolding for automation.
 
 This is achieved by loading globally installed addons, automatically performing actions based on a set of rules and triggers, and providing an HTTP interface to inspect and update the state of the application.
