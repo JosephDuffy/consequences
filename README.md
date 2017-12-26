@@ -1,5 +1,7 @@
 # Consequences
 
+[![Build Status](https://travis-ci.org/JosephDuffy/consequences.svg?branch=master)](https://travis-ci.org/JosephDuffy/consequences)
+[![Coverage Status](https://coveralls.io/repos/github/JosephDuffy/consequences/badge.svg?branch=master)](https://coveralls.io/github/JosephDuffy/consequences?branch=master)
 [![Greenkeeper badge](https://badges.greenkeeper.io/JosephDuffy/consequences.svg)](https://greenkeeper.io/)
 
 Consequences provides the scaffolding for automation.
