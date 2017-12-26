@@ -1,8 +1,8 @@
-import Link from '../Link';
+import { expect } from 'chai';
 import * as sinon from 'sinon';
 import Action from '../../interfaces/Action';
 import UserInput from '../../interfaces/UserInput';
-import { expect } from 'chai';
+import Link from '../Link';
 
 describe('Link', () => {
   describe('#evaluate()', () => {
@@ -27,6 +27,6 @@ describe('Link', () => {
       stubs.forEach(stub => {
         expect(stub.calledOnce).to.be.true;
       });
-    })
-  })
-})
+    });
+  });
+});

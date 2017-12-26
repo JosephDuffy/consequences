@@ -3,12 +3,12 @@ import { Inject, Service } from 'typedi';
 import * as winston from 'winston';
 
 import Addon from '../interfaces/Addon';
-import AddonsManager from '../models/AddonsManager';
 import AddonStatus from '../interfaces/AddonStatus';
 import UserInput from '../interfaces/UserInput';
 import Variable from '../interfaces/Variable';
 import VariableCollection from '../interfaces/VariableCollection';
 import VariableState from '../interfaces/VariableState';
+import AddonsManager from '../models/AddonsManager';
 
 @JsonController('/addons')
 @Service()

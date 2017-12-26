@@ -4,9 +4,9 @@ import * as winston from 'winston';
 
 import Addon from '../interfaces/Addon';
 import AddonInitialiser from '../interfaces/AddonInitialiser';
+import UserInput from '../interfaces/UserInput';
 import AddonsLoader from './AddonsLoader';
 import Database, { AddonSchema } from './Database';
-import UserInput from '../interfaces/UserInput';
 
 @Service()
 export default class AddonsManager {

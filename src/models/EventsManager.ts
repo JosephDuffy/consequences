@@ -1,12 +1,11 @@
 import { Inject, Service } from 'typedi';
 import * as uuid from 'uuid/v1';
-import winston = require('winston');
 
 import VariableValueChangedEvent from '../events/VariableValueChangedEvent';
-import AddonsManager, { AddonResolution } from './AddonsManager';
 import Event from '../interfaces/Event';
 import EventConstructor from '../interfaces/EventConstructor';
 import UserInput from '../interfaces/UserInput';
+import AddonsManager, { AddonResolution } from './AddonsManager';
 
 @Service()
 export default class EventsManager {

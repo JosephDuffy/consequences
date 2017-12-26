@@ -1,5 +1,5 @@
-import Event from './Event';
 import Link from '../models/Link';
+import Event from './Event';
 
 export default interface Chain {
   /**

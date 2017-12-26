@@ -1,5 +1,5 @@
-import BooleanCondition from '../BooleanCondition';
 import { expect } from 'chai';
+import BooleanCondition from '../BooleanCondition';
 
 describe('BooleanCondition', () => {
   context('True', () => {
