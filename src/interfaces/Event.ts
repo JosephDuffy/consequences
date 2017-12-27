@@ -10,16 +10,13 @@ interface Event {
    * Adds the provided listener to a list of functions that will be called
    * when the event is triggered
    *
-   * Even if the addon itself does not automatically know when its value has changed
-   * the `listener` function MUST be called when the value is updated via the `updateValue` function
-   *
-   * @param listener The function to be called when the value is updated
+   * @param listener The function to be called when the event is triggered
    */
   addTriggerEventListener(listener: () => void): void;
 
   /**
    * Removed the provided listener from the list of functions that will be called
-   * when the values updates
+   * when the event is triggered
    *
    * @param listener The listener function to be removed from the listeners list
    */
