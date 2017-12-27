@@ -10,6 +10,7 @@ import Package from './interfaces/Package';
 import UserInput from './interfaces/UserInput';
 import Variable from './interfaces/Variable';
 import VariableCollection from './interfaces/VariableCollection';
+import Variables from './models/Variables';
 
 export {
   Addon,
