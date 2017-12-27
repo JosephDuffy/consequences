@@ -46,7 +46,7 @@ interface Variable {
    *
    * @param listener The function to be called when the value is updated
    */
-  addChangeEventListener(listener: () => void): void;
+  addChangeEventListener(listener: (newValue: any) => void): void;
 
   /**
    * Removed the provided listener from the list of functions that will be called

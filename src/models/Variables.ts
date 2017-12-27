@@ -39,7 +39,7 @@ namespace Variables {
       return this.storedValue;
     }
 
-    public addChangeEventListener(listener: () => void) {
+    public addChangeEventListener(listener: (newValue: StoredType) => void) {
       this.addListener('valuechanged', listener);
     }
 
