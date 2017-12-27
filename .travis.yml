@@ -4,6 +4,10 @@ node_js:
   - "stable"
   - "lts/*"
 
+os:
+  - linux
+  - osx
+
 cache: yarn
 
 before_install: yarn global add greenkeeper-lockfile@1
