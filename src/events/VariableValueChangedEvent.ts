@@ -17,8 +17,8 @@ class VariableValueChangedEvent extends EventEmitter implements Event {
     this.variable = variable;
     this.metadata = metadata;
 
-    variable.addChangeEventListener(() => {
-      this.emit('eventTriggered');
+    variable.addChangeEventListener(newValue => {
+      this.emit('eventTriggered', newValue);
     });
   }
 
@@ -32,6 +32,7 @@ class VariableValueChangedEvent extends EventEmitter implements Event {
 
 }
 
+/* istanbul ignore next */
 namespace VariableValueChangedEvent {
   export class Constructor implements EventConstructor {
 
@@ -51,13 +52,17 @@ namespace VariableValueChangedEvent {
 
     public async createEvent(metadata: Event.Metadata, inputs?: UserInput.Value[]): Promise<VariableValueChangedEvent> {
       if (!inputs) {
-        throw new Error(`${name} requires a variable`);
+        throw new Error(`${this.name} requires a variable`);
       }
 
       const variable = inputs.find((input) => input.uniqueId === 'variable');
 
       if (!variable) {
-        throw new Error(`${name} requires a variable`);
+        throw new Error(`${this.name} requires an input with id "variable"`);
+      }
+
+      if (!Variable.objectIsVariable(variable.value)) {
+        throw new Error(`${this.name} requires input with id "variable"'s value to be a Variable`);
       }
 
       return new VariableValueChangedEvent(metadata, variable.value);

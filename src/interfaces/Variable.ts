@@ -68,4 +68,17 @@ interface Variable {
 
 }
 
+namespace Variable {
+  export function objectIsVariable(obj: any): obj is Variable {
+    return typeof obj.uniqueId === 'string' &&
+           typeof obj.name === 'string' &&
+           typeof obj.conditions === 'undefined' || Array.isArray(obj.conditions) &&
+           typeof obj.events === 'undefined' || Array.isArray(obj.events) &&
+           typeof obj.retrieveValue === 'function' &&
+           typeof obj.addChangeEventListener === 'function' &&
+           typeof obj.removeChangeEventListener === 'function' &&
+           typeof obj.updateValue === 'undefined' || typeof obj.updateValue === 'function';
+  }
+}
+
 export default Variable;
