@@ -32,7 +32,6 @@ class VariableValueChangedEvent extends EventEmitter implements Event {
 
 }
 
-/* istanbul ignore next */
 namespace VariableValueChangedEvent {
   export class Constructor implements EventConstructor {
 
