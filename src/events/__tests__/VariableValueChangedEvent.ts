@@ -1,9 +1,4 @@
-import chai = require('chai');
-import chaiAsPromised = require('chai-as-promised');
 import * as sinon from 'sinon';
-
-chai.use(chaiAsPromised);
-const { expect } = chai;
 
 import Event from '../../interfaces/Event';
 import Variable from '../../interfaces/Variable';
@@ -20,14 +15,14 @@ describe('VariableValueChangedEvent', () => {
     };
   });
 
-  context('Constructor', () => {
+  describe('Constructor', () => {
     let constructor: VariableValueChangedEvent.Constructor;
 
     beforeEach(() => {
       constructor = new VariableValueChangedEvent.Constructor();
     });
 
-    context('#createEvent(metadata:inputs:)', () => {
+    describe('#createEvent(metadata:inputs:)', () => {
       it('should create a new `VariableValueChangedEvent`', async () => {
         const variable = new Variables.ReadOnly({
           uniqueId: 'variable-1',
@@ -44,16 +39,16 @@ describe('VariableValueChangedEvent', () => {
 
         const event = await constructor.createEvent(metadata, inputs);
 
-        expect(event.metadata).to.deep.equal(metadata);
+        expect(event.metadata).toEqual(metadata);
         // tslint:disable-next-line:no-string-literal
-        expect(event['variable']).to.deep.equal(variable);
+        expect(event['variable']).toEqual(variable);
       });
 
-      it('should require the inputs parameter', () => {
-        expect(constructor.createEvent(metadata)).to.eventually.be.rejected;
+      it('should require the inputs parameter', async () => {
+        await expect(constructor.createEvent(metadata)).rejects.toThrowError();
       });
 
-      it('should require an input with the uniqueId "variable"', () => {
+      it('should require an input with the uniqueId "variable"', async () => {
         const inputs = [
           {
             uniqueId: 'not-variable',
@@ -65,10 +60,10 @@ describe('VariableValueChangedEvent', () => {
           },
         ];
 
-        expect(constructor.createEvent(metadata, inputs)).to.eventually.be.rejected;
+        await expect(constructor.createEvent(metadata, inputs)).rejects.toThrowError();
       });
 
-      it('should reject a non-Variable value with the uniqueId "variable"', () => {
+      it('should reject a non-Variable value with the uniqueId "variable"', async () => {
         const inputs = [
           {
             uniqueId: 'variable',
@@ -76,12 +71,12 @@ describe('VariableValueChangedEvent', () => {
           },
         ];
 
-        expect(constructor.createEvent(metadata, inputs)).to.eventually.be.rejected;
+        await expect(constructor.createEvent(metadata, inputs)).rejects.toThrowError();
       });
     });
   });
 
-  context('instances', () => {
+  describe('instances', () => {
     it('should notify listeners when the variable\'s value is changed', async () => {
       const variable = new Variables.ReadWrite({
         uniqueId: 'variable-1',
@@ -106,7 +101,7 @@ describe('VariableValueChangedEvent', () => {
       await variable.updateValue(newValue);
 
       callbacks.forEach(callback => {
-        expect(callback.calledWith(newValue)).to.be.true;
+        expect(callback.calledWith(newValue)).toEqual(true);
       });
     });
 
@@ -139,10 +134,10 @@ describe('VariableValueChangedEvent', () => {
 
       await variable.updateValue(newValue);
 
-      expect(callbackToNotBeCalled.notCalled).to.be.true;
+      expect(callbackToNotBeCalled.notCalled).toEqual(true);
 
       callbacksToBeCalled.forEach(callback => {
-        expect(callback.calledWith(newValue)).to.be.true;
+        expect(callback.calledWith(newValue)).toEqual(true);
       });
     });
   });

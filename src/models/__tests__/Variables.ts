@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import * as sinon from 'sinon';
 
 import BooleanCondition from '../../conditionals/BooleanCondition';
@@ -7,8 +6,8 @@ import Variable from '../../interfaces/Variable';
 import Variables from '../Variables';
 
 describe('Variables', () => {
-  context('ReadOnly', () => {
-      context('constructor', () => {
+  describe('ReadOnly', () => {
+      describe('constructor', () => {
       it('should store all values passed to the constructor', async () => {
         const changeEvent = new VariableValueChangedEvent(
           {
@@ -36,17 +35,17 @@ describe('Variables', () => {
 
         const variable = new Variables.ReadOnly(options);
 
-        expect(variable.uniqueId).to.equal(options.uniqueId);
-        expect(variable.name).to.equal(options.name);
-        expect(await variable.retrieveValue()).to.equal(options.startingValue);
-        expect(variable.conditions).to.deep.equal(options.conditions);
-        expect(variable.events).to.deep.equal(options.events);
+        expect(variable.uniqueId).toEqual(options.uniqueId);
+        expect(variable.name).toEqual(options.name);
+        await expect(variable.retrieveValue()).resolves.toEqual(options.startingValue);
+        expect(variable.conditions).toEqual(options.conditions);
+        expect(variable.events).toEqual(options.events);
       });
     });
   });
 
-  context('ReadWrite', () => {
-    context('#updateValue(newValue:)', () => {
+  describe('ReadWrite', () => {
+    describe('#updateValue(newValue:)', () => {
       it('should update the value immediately', async () => {
         const variable = new Variables.ReadWrite({
           uniqueId: 'variable-1',
@@ -58,9 +57,9 @@ describe('Variables', () => {
 
         await variable.updateValue(newValue);
 
-        const valueAfterUpdate = await variable.retrieveValue();
+        const valueAfterUpdatePromise = variable.retrieveValue();
 
-        expect(valueAfterUpdate).to.equal(newValue);
+        await expect(valueAfterUpdatePromise).resolves.toEqual(newValue);
       });
 
       it('should call all listeners with the new value', async () => {
@@ -85,7 +84,7 @@ describe('Variables', () => {
         await variable.updateValue(newValue);
 
         callbacks.forEach(callback => {
-          expect(callback.calledWith(newValue)).to.be.true;
+          expect(callback.calledWith(newValue)).toEqual(true);
         });
       });
 
@@ -116,10 +115,10 @@ describe('Variables', () => {
 
         await variable.updateValue(newValue);
 
-        expect(callbackToNotBeCalled.notCalled).to.be.true;
+        expect(callbackToNotBeCalled.notCalled).toEqual(true);
 
         callbacksToBeCalled.forEach(callback => {
-          expect(callback.calledWith(newValue)).to.be.true;
+          expect(callback.calledWith(newValue)).toEqual(true);
         });
       });
     });

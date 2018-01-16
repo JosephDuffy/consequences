@@ -1,10 +1,10 @@
-import { expect } from 'chai';
 import * as sinon from 'sinon';
+
+import BooleanCondition from '../../conditionals/BooleanCondition';
 import Action from '../../interfaces/Action';
 import Condition from '../../interfaces/Condition';
 import UserInput from '../../interfaces/UserInput';
 import Link from '../Link';
-import BooleanCondition from '../../conditionals/BooleanCondition';
 
 describe('Link', () => {
   describe('#evaluate()', () => {
@@ -27,7 +27,7 @@ describe('Link', () => {
       await link.evaluate();
 
       stubs.forEach(stub => {
-        expect(stub.calledOnce).to.be.true;
+        expect(stub.calledOnce).toEqual(true);
       });
     });
 
@@ -64,11 +64,11 @@ describe('Link', () => {
       await rootLink.evaluate();
 
       stubsToBeCalled.forEach(stub => {
-        expect(stub.calledOnce).to.be.true;
+        expect(stub.calledOnce).toEqual(true);
       });
 
       stubsToNotBeCalled.forEach(stub => {
-        expect(stub.notCalled).to.be.true;
+        expect(stub.notCalled).toEqual(true);
       });
     });
   });
