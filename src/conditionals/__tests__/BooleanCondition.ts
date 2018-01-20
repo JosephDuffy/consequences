@@ -1,8 +1,7 @@
-import { expect } from 'chai';
 import BooleanCondition from '../BooleanCondition';
 
 describe('BooleanCondition', () => {
-  context('True', () => {
+  describe('True', () => {
     let condition: BooleanCondition.True;
 
     beforeEach(() => {
@@ -18,7 +17,7 @@ describe('BooleanCondition', () => {
           },
         ]);
 
-        expect(result).to.be.true;
+        expect(result).toEqual(true);
       });
 
       it('should return `true` when passed multiple inputs with id "input", the first with value "true" and second value "false"', async () => {
@@ -33,7 +32,7 @@ describe('BooleanCondition', () => {
           },
         ]);
 
-        expect(result).to.be.true;
+        expect(result).toEqual(true);
       });
 
       it('should return `false` when passed multiple inputs with id "input", the first with value "false" and second value "true"', async () => {
@@ -48,13 +47,13 @@ describe('BooleanCondition', () => {
           },
         ]);
 
-        expect(result).to.be.false;
+        expect(result).toEqual(false);
       });
 
       it('should return `false` with 0 inputs', async () => {
         const result = await condition.evaluate([]);
 
-        expect(result).to.be.false;
+        expect(result).toEqual(false);
       });
 
       it('should return `false` when no values have the id "input"', async () => {
@@ -65,12 +64,12 @@ describe('BooleanCondition', () => {
           },
         ]);
 
-        expect(result).to.be.false;
+        expect(result).toEqual(false);
       });
     });
   });
 
-  context('False', () => {
+  describe('False', () => {
     let condition: BooleanCondition.False;
 
     beforeEach(() => {
@@ -86,7 +85,7 @@ describe('BooleanCondition', () => {
           },
         ]);
 
-        expect(result).to.be.true;
+        expect(result).toEqual(true);
       });
 
       it('should return `true` when passed multiple inputs with id "input", the first with value "false" and second value "true"', async () => {
@@ -101,7 +100,7 @@ describe('BooleanCondition', () => {
           },
         ]);
 
-        expect(result).to.be.true;
+        expect(result).toEqual(true);
       });
 
       it('should return `false` when passed multiple inputs with id "input", the first with value "true" and second value "false"', async () => {
@@ -116,13 +115,13 @@ describe('BooleanCondition', () => {
           },
         ]);
 
-        expect(result).to.be.false;
+        expect(result).toEqual(false);
       });
 
       it('should return `false` with 0 inputs', async () => {
         const result = await condition.evaluate([]);
 
-        expect(result).to.be.false;
+        expect(result).toEqual(false);
       });
 
       it('should return `false` when no values have the id "input"', async () => {
@@ -133,7 +132,7 @@ describe('BooleanCondition', () => {
           },
         ]);
 
-        expect(result).to.be.false;
+        expect(result).toEqual(false);
       });
     });
   });

@@ -5,11 +5,13 @@ export default async function asyncExec(command: string): Promise<string> {
     exec(command, (error, stdout, stderr) => {
       /* istanbul ignore if */
       if (error) {
-        throw error;
+        reject(error);
+        return;
       }
 
       if (stderr !== '') {
-        throw new Error(stderr);
+        reject(new Error(stderr));
+        return;
       }
 
       // Remove new line etc.
