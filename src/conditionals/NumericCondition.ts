@@ -24,6 +24,7 @@ namespace NumericCondition {
       const lhsInput = inputs.find(({ uniqueId }) => uniqueId === 'lhs_input');
       const rhsInput = inputs.find(({ uniqueId }) => uniqueId === 'rhs_input');
 
+      /* istanbul ignore if */
       if (lhsInput === undefined || rhsInput === undefined) {
         return false;
       }
@@ -31,6 +32,7 @@ namespace NumericCondition {
       return this.checkValues(lhsInput.value, rhsInput.value);
     }
 
+    /* istanbul ignore next */
     protected checkValues(lhs: number, rhs: number): boolean {
       throw new Error('`checkValues` method must be overridden by subclasses');
     }
@@ -97,7 +99,7 @@ namespace NumericCondition {
 
   }
 
-  export class GreaterOrEqualToThan extends Base implements Condition {
+  export class GreaterOrEqualTo extends Base implements Condition {
 
     public readonly uniqueId = 'numeric_gte';
 
