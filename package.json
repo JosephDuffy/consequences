@@ -40,7 +40,7 @@
     "@types/koa-router": "^7.0.23",
     "@types/lokijs": "^1.2.30",
     "@types/mz": "^0.0.32",
-    "@types/node": "^9.3.0",
+    "@types/node": "^10.0.3",
     "@types/sinon": "^4.1.2",
     "@types/uuid": "^3.4.2",
     "@types/winston": "^2.3.5",
