@@ -36,7 +36,7 @@
     "@types/core-js": "^0.9.43",
     "@types/jest": "^22.0.1",
     "@types/koa": "^2.0.39",
-    "@types/koa-bodyparser": "^4.2.0",
+    "@types/koa-bodyparser": "^5.0.1",
     "@types/koa-router": "^7.0.23",
     "@types/lokijs": "^1.2.30",
     "@types/mz": "^0.0.32",
