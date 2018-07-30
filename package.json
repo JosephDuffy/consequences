@@ -28,7 +28,7 @@
     "mz": "^2.6.0",
     "reflect-metadata": "^0.1.10",
     "routing-controllers": "^0.7.2",
-    "typedi": "^0.7.0",
+    "typedi": "^0.8.0",
     "uuid": "^3.1.0",
     "winston": "^2.3.1"
   },

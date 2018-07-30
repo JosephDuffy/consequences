@@ -3657,9 +3657,9 @@ type-is@^1.5.5, type-is@^1.6.14:
     media-typer "0.3.0"
     mime-types "~2.1.15"
 
-typedi@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/typedi/-/typedi-0.7.0.tgz#2a6abf7254148e24f0a5f0f033e94f1462d06a25"
+typedi@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/typedi/-/typedi-0.8.0.tgz#d8e203bd1d41a96e2b0a5c6295147d74b2b2d03e"
 
 typescript@^2.5.2:
   version "2.5.2"
