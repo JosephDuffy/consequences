@@ -4,6 +4,7 @@
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/JosephDuffy/consequences/branch/master?branch=master&svg=true)](https://ci.appveyor.com/project/JosephDuffy/consequences/branch/master)
 [![Coverage Status](https://coveralls.io/repos/github/JosephDuffy/consequences/badge.svg?branch=master)](https://coveralls.io/github/JosephDuffy/consequences?branch=master)
 [![Greenkeeper badge](https://badges.greenkeeper.io/JosephDuffy/consequences.svg)](https://greenkeeper.io/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FJosephDuffy%2Fconsequences.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FJosephDuffy%2Fconsequences?ref=badge_shield)
 
 Consequences provides the scaffolding for automation.
 
@@ -51,3 +52,5 @@ This project is currently under development and is considered unstable. Until a 
 ## License
 
 Consequences is released until the MIT license. See the LICENSE file for the full license.
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FJosephDuffy%2Fconsequences.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FJosephDuffy%2Fconsequences?ref=badge_large)
