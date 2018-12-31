@@ -41,7 +41,7 @@
     "@types/lokijs": "^1.2.30",
     "@types/mz": "^0.0.32",
     "@types/node": "^10.5.4",
-    "@types/sinon": "^5.0.0",
+    "@types/sinon": "^7.0.3",
     "@types/uuid": "^3.4.2",
     "@types/winston": "^2.3.5",
     "coveralls": "^3.0.0",
